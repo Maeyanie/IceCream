@@ -39,7 +39,7 @@ char* fetchurl(const char* url, const char* file) {
 	
 	if (file) {
 		fi.string = NULL;
-		fi.fp = fopen(file, "w");
+		fi.fp = fopen(file, "wb");
 		if (!fi.fp) die("Could not open file '%s' for writing: %s\n", file, strerror(errno));
 		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
 	} else {

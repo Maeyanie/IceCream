@@ -17,6 +17,7 @@ int showmenu(vector<char*>& options) {
 	for (unsigned int x = 0; x < options.size(); x++) {
 		printf("%d: %s\n", x+1, options[x]);
 	}
+	fflush(stdout);
 	scanf("%d", &ret);
 	return ret-1;
 }
@@ -30,6 +31,7 @@ int showmenu(list<Mod>& options) {
 	for (list<Mod>::iterator i = options.begin(); i != options.end(); i++) {
 		printf("%d: %s\n", ++x, (*i).desc);
 	}
+	fflush(stdout);
 	scanf(" %d", &ret);
 	return ret-2;
 }

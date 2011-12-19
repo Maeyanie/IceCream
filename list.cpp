@@ -28,7 +28,7 @@ struct BukkitInfo* bukkitversion() {
 	}
 	
 	for (int i = 0; i < lines.size(); i++) {
-		url = strtok(line, " ");
+		url = strtok(lines[i], " ");
 		code = strtok(NULL, " ");
 		option = strtok(NULL, "\r\n");
 		
@@ -83,7 +83,7 @@ void modlist(vector<Mod>* mods, const char* bukkitcode) {
 	}
 	
 	for (int i = 0; i < lines.size(); i++) {
-		url = strtok(line, " ");
+		url = strtok(lines[i], " ");
 		name = strtok(NULL, "\r\n");
 		
 		urls.push_back(url);

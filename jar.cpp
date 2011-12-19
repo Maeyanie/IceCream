@@ -16,7 +16,11 @@ void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
 	
 	status("Building Bukkit jar: Preparing...");
 	bzp = zip_open(BUKKITJAR, ZIP_CHECKCONS, &err);
-	if (!bzp) die("Could not open '%s' for writing: %d\n", BUKKITJAR, err);
+	if (!bzp) {
+		char errbuf[256];
+		zip_error_to_str(errbuf, 256, err, errno);
+		die("Could not open '%s' for writing: %s\n", BUKKITJAR, errbuf);
+	}
 	
 	for (vector<Mod>::iterator i = mods.begin(); i != mods.end(); ++i) {
 		status("Building Bukkit jar: %s", (*i).name);

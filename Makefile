@@ -6,7 +6,7 @@ all: icecream
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 icecream: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(OBJS) -lcurl -lyaml-cpp -lzip
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(OBJS) -lcurl -lyaml-cpp -lzip -lz
 
 clean:
 	rm -f $(OBJS)
