@@ -1,6 +1,8 @@
-_IceCream for Bukkit_
+IceCream for Bukkit
 
 Add flavours to your Bukkit!
+
+
 
 *What does it do?*
 IceCream is an auto-patcher for Bukkit.
@@ -13,3 +15,13 @@ ready-to-use craftbukkit.jar file.
 *Why IceCream?*
 Because it fills buckets, and comes in many flavours.
 
+
+
+*Prerequisites*
+IceCream relies on libcurl, libzip, and yaml-cpp.
+
+*Compiling*
+In theory, it should be as simple as 'make' if everything is where the compiler
+expects it. If not, you can define CXXFLAGS and LDFLAGS and/or edit the
+Makefile to get it to work. It's a simple enough program I haven't bothered
+with any sort of configure script.
