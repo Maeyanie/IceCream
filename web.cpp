@@ -6,59 +6,116 @@
 struct FetchInfo {
 	char** string;
 	int length;
-	FILE* fp;
 };
 
-size_t fetchurlcb(char *ptr, size_t size, size_t nmemb, void *userdata) {
+static CURL* curl;
+
+size_t fetchurlstr(char *ptr, size_t size, size_t nmemb, void *userdata) {
 	struct FetchInfo* fi = (struct FetchInfo*)userdata;
-	if (fi->fp) {
-		return fwrite(ptr, size, nmemb, fi->fp);
-	} else {
-		int newlen = fi->length + (size * nmemb);
-		*(fi->string) = (char*)realloc(*(fi->string), newlen+1);
-		memcpy(*(fi->string)+fi->length, ptr, size*nmemb);
-		(*(fi->string))[newlen] = 0;
-		fi->length = newlen;
-		return size * nmemb;
-	}
+
+	int newlen = fi->length + (size * nmemb);
+
+	*(fi->string) = (char*)realloc(*(fi->string), newlen+1);
+
+	memcpy(*(fi->string)+fi->length, ptr, size*nmemb);
+	(*(fi->string))[newlen] = 0;
+
+	fi->length = newlen;
+	return size * nmemb;
 }
 
-char* fetchurl(const char* url, const char* file) {
-	static CURL* curl;
+size_t fetchurlfile(char *ptr, size_t size, size_t nmemb, void *userdata) {
+	return fwrite(ptr, size, nmemb, (FILE*)userdata);
+}
+
+int progresscb(void* clientp, double dltotal, double dlnow, double ultotal, double ulnow) {
+	double speed, done;
+	char bar[51];
+	int rv;
+
+	done = dlnow / dltotal * 50.0;
+	if (done > 50.0) done = 50.0; // Shouldn't be possible, but...
+	
+	int i;
+	for (i = 0; i < done; i++) bar[i] = '=';
+	bar[i] = 0;
+	
+	printf("\r[%-50s]", bar);
+	fflush(stdout);
+	
+	return 0;
+}
+
+void curlsetup() {
+	curl = curl_easy_init();
+	if (!curl) die("cURL init failed.");
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/0.1 (http://icecream.maeyanie.com)");
+	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, &progresscb);
+	//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+}
+
+char* fetchurl(const char* url) {
 	char* ret = NULL;
 	struct FetchInfo fi;
 	int rc;
 
-	if (!curl) {
-		curl = curl_easy_init();
-		if (!curl) die("cURL init failed.");
-		curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/0.1 (http://icecream.maeyanie.com)");
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &fetchurlcb);
-		//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-	}
+	if (!curl) curlsetup();
 	
-	if (file) {
-		fi.string = NULL;
-		fi.fp = fopen(file, "wb");
-		if (!fi.fp) die("Could not open file '%s' for writing: %s\n", file, strerror(errno));
-		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
-	} else {
-		fi.string = &ret;
-		fi.length = 0;
-		fi.fp = NULL;
-		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
-	}
+	fi.string = &ret;
+	fi.length = 0;
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &fetchurlstr);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &fi);
+	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
 
 	curl_easy_setopt(curl, CURLOPT_URL, url);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &fi);
+	rc = curl_easy_perform(curl);
+	if (rc) die("Could not fetch URL '%s'\n", url);
+	
+	return ret;
+}
+
+void fetchurl(const char* url, const char* file) {
+	char* ret = NULL;
+	FILE* fp;
+	int rc;
+
+	if (!curl) curlsetup();
+	
+	fp = fopen(file, "wb");
+	if (!fp) die("Could not open file '%s' for writing: %s\n", file, strerror(errno));
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &fetchurlfile);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
+
+	curl_easy_setopt(curl, CURLOPT_URL, url);
 	rc = curl_easy_perform(curl);
 	if (rc) die("Could not fetch URL '%s' to file '%s'\n", url, file);
 	
-	if (file) {
-		fclose(fi.fp);
-		return NULL;
-	} else {
-		return ret;
+	fclose(fp);
+}
+
+void fetchfiles(vector<FileDownload>& files) {
+	FILE* fp;
+	int rc;
+	
+	if (!curl) curlsetup();
+
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &fetchurlfile);
+	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
+	
+	for (int i = 0; i < files.size(); i++) {
+		status("Downloading: %s", files[i].name);
+		curl_easy_setopt(curl, CURLOPT_URL, files[i].url);
+		
+		fp = fopen(files[i].filename, "wb");
+		if (!fp) die("Could not open file '%s' for writing: %s\n", files[i].filename, strerror(errno));		
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+		
+		rc = curl_easy_perform(curl);
+		if (rc) die("Could not fetch URL '%s' to file '%s'\n", files[i].url, files[i].filename);
+		
+		fclose(fp);
+		printf("\n");
 	}
 }
 

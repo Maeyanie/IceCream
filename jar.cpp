@@ -11,8 +11,13 @@ void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
 	int err;
 	int index;
 
-	status("Downloading %s jar...", binfo->option);
-	fetchurl(binfo->url, BUKKITJAR);
+	status("Downloading files...");
+	vector<FileDownload> dlfiles;
+	dlfiles.push_back(FileDownload("Bukkit", binfo->url, BUKKITJAR));
+	for (vector<Mod>::iterator i = mods.begin(); i != mods.end(); ++i) {
+		dlfiles.push_back(FileDownload((*i).name, (*i).url, (*i).filename));
+	}
+	fetchfiles(dlfiles);
 	
 	status("Building Bukkit jar: Preparing...");
 	bzp = zip_open(BUKKITJAR, ZIP_CHECKCONS, &err);
@@ -24,7 +29,6 @@ void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
 	
 	for (vector<Mod>::iterator i = mods.begin(); i != mods.end(); ++i) {
 		status("Building Bukkit jar: %s", (*i).name);
-		fetchurl((*i).url, (*i).filename);
 
 		mzp = zip_open((*i).filename, ZIP_CHECKCONS, &err);
 		if (!mzp) {

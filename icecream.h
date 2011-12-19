@@ -22,6 +22,14 @@ struct BukkitInfo {
 	char* option;
 };
 
+struct FileDownload {
+	const char* name;
+	const char* url;
+	const char* filename;
+	
+	FileDownload(const char* n, const char* u, const char* f) : name(n), url(u), filename(f) {};
+};
+
 
 struct BukkitInfo* bukkitversion();
 void modlist(vector<Mod>* mods, const char* bukkitcode);
@@ -33,7 +41,9 @@ int showmenu(vector<char*>& options);
 int showmenu(list<Mod>& options);
 
 // web.cpp
-char* fetchurl(const char* url, const char* file = NULL);
+char* fetchurl(const char* url);
+void fetchurl(const char* url, const char* file);
+void fetchfiles(vector<FileDownload>& files);
 
 #define die(a...) realdie(__FILE__, __LINE__, a)
 void realdie(const char* file, int line, const char* fmt, ...) __attribute__((format(printf, 3, 4)));
