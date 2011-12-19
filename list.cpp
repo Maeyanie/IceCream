@@ -16,20 +16,41 @@ struct BukkitInfo* bukkitversion() {
 	char* versiontext = fetchurl(BUKKITURL);
 	if (!versiontext || !versiontext[0]) die("Could not fetch list of Bukkit versions.\n");
 	
-	char* pos;
-	char* line = strtok_r(versiontext, "\r\n", &pos);
+	char* line;
 	char* url, * code, * option;
-	do {
+	#ifdef __WIN32__
+	// Windows doesn't have strtok_r().
+	vector<char*> lines;	
+	line = strtok(versiontext, "\r\n");
+	while (line) {
+		lines.push_back(line);
+		line = strtok(NULL, "\r\n");
+	}
+	
+	for (int i = 0; i < lines.size(); i++) {
 		url = strtok(line, " ");
 		code = strtok(NULL, " ");
 		option = strtok(NULL, "\r\n");
 		
-		//printf("url=%s\ncode=%s\noption=%s\n", url, code, option);
+		urls.push_back(url);
+		codes.push_back(code);
+		options.push_back(option);
+	}
+	#else
+	char* pos;
+	line = strtok_r(versiontext, "\r\n", &pos);
+	while (line) {
+		url = strtok(line, " ");
+		code = strtok(NULL, " ");
+		option = strtok(NULL, "\r\n");
 		
 		urls.push_back(url);
 		codes.push_back(code);
 		options.push_back(option);
-	} while ((line = strtok_r(NULL, "\r\n", &pos)));
+		
+		line = strtok_r(NULL, "\r\n", &pos);
+	}
+	#endif
 	
 	r = showmenu(options);
 	
@@ -51,25 +72,39 @@ void modlist(vector<Mod>* mods, const char* bukkitcode) {
 	vector<char*> urls;
 	vector<char*> names;
 
-	char* pos;
-	char* line = strtok_r(metatext, "\r\n", &pos);
+	char* line;
 	char* url, * name;
-	do {
-
-		//printf("line=%s\n", line);
-		
+	#ifdef __WIN32__
+	vector<char*> lines;	
+	line = strtok(metatext, "\r\n");
+	while (line) {
+		lines.push_back(line);
+		line = strtok(NULL, "\r\n");
+	}
+	
+	for (int i = 0; i < lines.size(); i++) {
 		url = strtok(line, " ");
 		name = strtok(NULL, "\r\n");
 		
-		//printf("url=%s\nname=%s\n", url, name);
+		urls.push_back(url);
+		names.push_back(name);
+	}
+	#else
+	char* pos;
+	line = strtok_r(metatext, "\r\n", &pos);
+	while (line) {
+		url = strtok(line, " ");
+		name = strtok(NULL, "\r\n");
 		
 		urls.push_back(url);
 		names.push_back(name);
-	} while ((line = strtok_r(NULL, "\r\n", &pos)));
-	
+		
+		line = strtok_r(NULL, "\r\n", &pos);
+	}
+	#endif
 
 	list<Mod> modlist;
-	
+
 	for (unsigned int i = 0; i < urls.size(); i++) {
 		status("Fetching list: %s", names[i]);
 		char* listtext = fetchurl(urls[i]);
