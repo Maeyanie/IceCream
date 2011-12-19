@@ -33,6 +33,7 @@ struct FileDownload {
 
 struct BukkitInfo* bukkitversion();
 void modlist(vector<Mod>* mods, const char* bukkitcode);
+void processdeps(vector<Mod>* mods, list<Mod>* modlist, const Mod& mod);
 void buildjar(const struct BukkitInfo*, vector<Mod>&);
 
 // ui.cpp

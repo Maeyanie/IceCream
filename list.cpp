@@ -134,7 +134,38 @@ void modlist(vector<Mod>* mods, const char* bukkitcode) {
 		for (int j = 0; j < m; j++) i++;
 		Mod mod = *i;
 		modlist.remove(mod);
+		
+		processdeps(mods, &modlist, mod);
+		
 		mods->push_back(mod);
+	}
+}
+
+void processdeps(vector<Mod>* mods, list<Mod>* modlist, const Mod& mod) {
+	for (int i = 0; i < mod.depends.size(); i++) {
+		const char* dep = mod.depends[i];
+		
+		int found = 0;
+		for (int j = 0; j < mods->size(); j++) {
+			if ((*mods)[j] == dep) {
+				found = 1;
+				break;
+			}
+		}
+		if (found) continue;
+		
+		found = 0;
+		for (list<Mod>::iterator j = modlist->begin(); j != modlist->end(); ++j) {
+			if (*j == dep) {
+				Mod depmod = *j;
+				modlist->remove(depmod);
+				processdeps(mods, modlist, depmod);
+				mods->push_back(depmod);
+				found = 1;
+				break;
+			}
+		}
+		if (found == 0) printf("Warning: Unsatisfied dependency '%s'\n", dep);
 	}
 }
 
