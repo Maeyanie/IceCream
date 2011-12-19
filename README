@@ -1,0 +1,15 @@
+_IceCream for Bukkit_
+
+Add flavours to your Bukkit!
+
+*What does it do?*
+IceCream is an auto-patcher for Bukkit.
+It will give you a list of Bukkit versions to choose from, followed by list of
+mods for that version, fetched from any number of sites.
+Once you have selected mods, it will download the selected Bukkit jar from
+bukkit.org, the mods from the authors' sites, then assemble them into a final,
+ready-to-use craftbukkit.jar file.
+
+*Why IceCream?*
+Because it fills buckets, and comes in many flavours.
+
