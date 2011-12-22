@@ -49,7 +49,7 @@ int progresscb(void* clientp, double dltotal, double dlnow, double ultotal, doub
 void curlsetup() {
 	curl = curl_easy_init();
 	if (!curl) die("cURL init failed.");
-	curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/0.1 (http://icecream.maeyanie.com)");
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/0.2 (http://icecream.maeyanie.com)");
 	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, &progresscb);
 	//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
 }
