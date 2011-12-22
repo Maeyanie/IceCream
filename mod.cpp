@@ -18,8 +18,7 @@ Mod::Mod(const YAML::Node& modnode) {
 	if ((key = modnode.FindValue("filename"))) {
 		*key >> filename;
 	} else {
-		filename = (char*)malloc(strlen(name)+5);
-		sprintf(filename, "%s.zip", name);
+		filename = strdup(strrchr(url, '/') + 1);
 	}
 	
 	if ((key = modnode.FindValue("depends"))) {
