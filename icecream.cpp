@@ -32,6 +32,10 @@ int main(int argc, char* argv[]) {
 	
 	status(" ");
 	uicleanup();
+	
+	for (unsigned int x = 0; x < mods.size(); x++) {
+		unlink(mods[x].filename);
+	}
 
 	//printf("All done. You can find your modded Bukkit jar at: %s/%s\n", dir, BUKKITJAR);
 	printf("All done.\n");
