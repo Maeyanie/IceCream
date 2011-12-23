@@ -1,5 +1,5 @@
 #include "icecream.h"
-#include <ncurses.h>
+#include <curses.h>
 #include <panel.h>
 
 static WINDOW* wmain;
@@ -30,17 +30,20 @@ void uicleanup() {
 
 void status(const char* fmt, ...) {
 	va_list vl;
+
 	va_start(vl, fmt);
 	wmove(wstatus, 0, 0);
 	vwprintw(wstatus, fmt, vl);
 	wprintw(wstatus, "\n");
+	va_end(vl);
 
+	va_start(vl, fmt);
 	vwprintw(wmain, fmt, vl);
 	wprintw(wmain, "\n");
+	va_end(vl);
 
 	update_panels();
 	doupdate();
-	va_end(vl);
 }
 
 void log(const char* fmt, ...) {
@@ -106,6 +109,7 @@ int showmenu(const char* title, vector<char*>& options) {
 			break;
 		case KEY_DOWN:
 			line++;
+			if (line >= end) line = end-1;
 			if (line+start+4 >= LINES) offset++;
 			break;
 		}
