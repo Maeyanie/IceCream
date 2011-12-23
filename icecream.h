@@ -37,8 +37,8 @@ void processdeps(vector<Mod>* mods, list<Mod>* modlist, const Mod& mod);
 void buildjar(const struct BukkitInfo*, vector<Mod>&);
 
 // ui.cpp
-void status(const char* fmt, ...);
-void log(const char* fmt, ...);
+void status(const char* fmt, ...) __attribute__((format(printf, 1, 2)));
+void log(const char* fmt, ...) __attribute__((format(printf, 1, 2)));
 int showmenu(vector<char*>& options);
 int showmenu(list<Mod>& options);
 
