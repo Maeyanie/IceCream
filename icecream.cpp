@@ -3,7 +3,9 @@
 int main(int argc, char* argv[]) {
 	struct BukkitInfo* binfo;
 	vector<Mod> mods;
-	char yn;
+
+	uiinit();
+	
 	/*char* origdir = (char*)malloc(256);
 	char* dir;
 	int rv;
@@ -20,23 +22,17 @@ int main(int argc, char* argv[]) {
 	binfo = bukkitversion();
 	
 	modlist(&mods, binfo->code);
-	
-	status(" ");
-	printf("About to download Bukkit %s, and add the following mods in this order:\n", binfo->code);
-	for (unsigned int i = 0; i < mods.size(); i++) {
-		printf("%d: %s\n", i+1, mods[i].name);
-	}
-	printf("Are you sure? (y/N): ");
-	fflush(stdout);
-	scanf(" %c", &yn);
-	if (tolower(yn) != 'y') {
-		printf("Exiting.\n");
+
+	if (!confirm(binfo, mods)) {
+		uicleanup();
 		return 0;
 	}
 	
 	buildjar(binfo, mods);
 	
 	status(" ");
+	uicleanup();
+
 	//printf("All done. You can find your modded Bukkit jar at: %s/%s\n", dir, BUKKITJAR);
 	printf("All done.\n");
 	return 0;
@@ -46,6 +42,8 @@ int main(int argc, char* argv[]) {
 
 void realdie(const char* file, int line, const char* fmt, ...) {
 	va_list vl;
+	
+	uicleanup();
 	va_start(vl, fmt);
 	fprintf(stderr, "Error at %s:%d: ", file, line);
 	vfprintf(stderr, fmt, vl);

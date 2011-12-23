@@ -37,10 +37,13 @@ void processdeps(vector<Mod>* mods, list<Mod>* modlist, const Mod& mod);
 void buildjar(const struct BukkitInfo*, vector<Mod>&);
 
 // ui.cpp
+void uiinit();
+void uicleanup();
 void status(const char* fmt, ...) __attribute__((format(printf, 1, 2)));
 void log(const char* fmt, ...) __attribute__((format(printf, 1, 2)));
-int showmenu(vector<char*>& options);
+int showmenu(const char* title, vector<char*>& options);
 int showmenu(list<Mod>& options);
+int confirm(struct BukkitInfo* binfo, vector<Mod>& mods);
 
 // web.cpp
 char* fetchurl(const char* url);

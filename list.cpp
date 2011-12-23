@@ -52,7 +52,7 @@ struct BukkitInfo* bukkitversion() {
 	}
 	#endif
 	
-	r = showmenu(options);
+	r = showmenu("Select Bukkit Version", options);
 	
 	BukkitInfo* ret = new BukkitInfo();
 	ret->url = strdup(urls[r]);
