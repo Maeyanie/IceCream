@@ -32,9 +32,12 @@ void status(const char* fmt, ...) {
 	va_list vl;
 	va_start(vl, fmt);
 	wmove(wstatus, 0, 0);
-	wprintw(wstatus, "\n");
-	wmove(wstatus, 0, 0);
 	vwprintw(wstatus, fmt, vl);
+	wprintw(wstatus, "\n");
+
+	vwprintw(wmain, fmt, vl);
+	wprintw(wmain, "\n");
+
 	update_panels();
 	doupdate();
 	va_end(vl);
@@ -52,20 +55,22 @@ void log(const char* fmt, ...) {
 void pbupdate(double done) {
 	int r, c;
 	char fmt[16];
-	char bar[COLS-1];
+	char bar[COLS-2];
 
 	getyx(wmain, r, c);
 
-	done *= (COLS-2);
-	if (done > COLS-2) done = COLS-2; // Shouldn't be possible, but...
+	done *= (COLS-3);
+	if (done > COLS-3) done = COLS-3; // Shouldn't be possible, but...
 	
 	int i;
 	for (i = 0; i < done; i++) bar[i] = '=';
 	bar[i] = 0;
 	
-	sprintf(fmt, "[%%-%ds]", COLS-2);
+	sprintf(fmt, "[%%-%ds]", COLS-3);
 	mvwprintw(wmain, r, 0, fmt, bar);
-	fflush(stdout);
+	
+	update_panels();
+	doupdate();
 }
 
 int showmenu(const char* title, vector<char*>& options) {
@@ -156,7 +161,7 @@ int showmenu(list<Mod>& options) {
 			break;
 		case KEY_DOWN:
 			line++;
-			if (line > end) line = end;
+			if (line >= end) line = end-1;
 			if (line+start+4 >= LINES) offset++;
 			break;
 		}

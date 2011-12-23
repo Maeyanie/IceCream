@@ -74,9 +74,9 @@ int confirm(struct BukkitInfo* binfo, vector<Mod>& mods) {
 	scanf(" %c", &yn);
 	if (tolower(yn) != 'y') {
 		printf("Exiting.\n");
-		return 1;
+		return 0;
 	}
-	return 0;
+	return 1;
 }
 
 
