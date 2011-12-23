@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 	
 	modlist(&mods, binfo->code);
 	
-	status("");
+	status(" ");
 	printf("About to download Bukkit %s, and add the following mods in this order:\n", binfo->code);
 	for (unsigned int i = 0; i < mods.size(); i++) {
 		printf("%d: %s\n", i+1, mods[i].name);
@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
 	
 	buildjar(binfo, mods);
 	
-	status("");
+	status(" ");
 	//printf("All done. You can find your modded Bukkit jar at: %s/%s\n", dir, BUKKITJAR);
 	printf("All done.\n");
 	return 0;

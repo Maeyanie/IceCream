@@ -142,11 +142,11 @@ void modlist(vector<Mod>* mods, const char* bukkitcode) {
 }
 
 void processdeps(vector<Mod>* mods, list<Mod>* modlist, const Mod& mod) {
-	for (int i = 0; i < mod.depends.size(); i++) {
+	for (unsigned int i = 0; i < mod.depends.size(); i++) {
 		const char* dep = mod.depends[i];
 		
 		int found = 0;
-		for (int j = 0; j < mods->size(); j++) {
+		for (unsigned int j = 0; j < mods->size(); j++) {
 			if ((*mods)[j] == dep) {
 				found = 1;
 				break;

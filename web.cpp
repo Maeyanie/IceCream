@@ -29,9 +29,8 @@ size_t fetchurlfile(char *ptr, size_t size, size_t nmemb, void *userdata) {
 }
 
 int progresscb(void* clientp, double dltotal, double dlnow, double ultotal, double ulnow) {
-	double speed, done;
+	double done;
 	char bar[51];
-	int rv;
 
 	done = dlnow / dltotal * 50.0;
 	if (done > 50.0) done = 50.0; // Shouldn't be possible, but...
@@ -75,7 +74,6 @@ char* fetchurl(const char* url) {
 }
 
 void fetchurl(const char* url, const char* file) {
-	char* ret = NULL;
 	FILE* fp;
 	int rc;
 
@@ -103,7 +101,7 @@ void fetchfiles(vector<FileDownload>& files) {
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &fetchurlfile);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
 	
-	for (int i = 0; i < files.size(); i++) {
+	for (unsigned int i = 0; i < files.size(); i++) {
 		status("Downloading: %s", files[i].name);
 		curl_easy_setopt(curl, CURLOPT_URL, files[i].url);
 		

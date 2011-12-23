@@ -21,7 +21,7 @@ void log(const char* fmt, ...) {
 
 int showmenu(vector<char*>& options) {
 	int ret;
-	status("");
+	status(" ");
 	// TODO: Fancy menu goes here.
 	for (unsigned int x = 0; x < options.size(); x++) {
 		printf("%d: %s\n", x+1, options[x]);
@@ -34,7 +34,7 @@ int showmenu(vector<char*>& options) {
 int showmenu(list<Mod>& options) {
 	int ret;
 	int x = 1;
-	status("");
+	status(" ");
 	// TODO: Fancy menu goes here.
 	printf("1: Done\n");
 	for (list<Mod>::iterator i = options.begin(); i != options.end(); i++) {
