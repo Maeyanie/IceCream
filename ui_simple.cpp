@@ -21,6 +21,20 @@ void log(const char* fmt, ...) {
 	va_end(vl);
 }
 
+void pbupdate(double done) {
+	char bar[51];
+
+	done *= 50.0;
+	if (done > 50.0) done = 50.0; // Shouldn't be possible, but...
+	
+	int i;
+	for (i = 0; i < done; i++) bar[i] = '=';
+	bar[i] = 0;
+	
+	printf("\r[%-50s]", bar);
+	fflush(stdout);
+}
+
 int showmenu(const char* title, vector<char*>& options) {
 	int ret;
 	status(" ");

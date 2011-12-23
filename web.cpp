@@ -29,19 +29,7 @@ size_t fetchurlfile(char *ptr, size_t size, size_t nmemb, void *userdata) {
 }
 
 int progresscb(void* clientp, double dltotal, double dlnow, double ultotal, double ulnow) {
-	double done;
-	char bar[51];
-
-	done = dlnow / dltotal * 50.0;
-	if (done > 50.0) done = 50.0; // Shouldn't be possible, but...
-	
-	int i;
-	for (i = 0; i < done; i++) bar[i] = '=';
-	bar[i] = 0;
-	
-	printf("\r[%-50s]", bar);
-	fflush(stdout);
-	
+	pbupdate(dlnow / dltotal);
 	return 0;
 }
 

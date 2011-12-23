@@ -49,6 +49,25 @@ void log(const char* fmt, ...) {
 	va_end(vl);
 }
 
+void pbupdate(double done) {
+	int r, c;
+	char fmt[16];
+	char bar[COLS-1];
+
+	getyx(wmain, r, c);
+
+	done *= (COLS-2);
+	if (done > COLS-2) done = COLS-2; // Shouldn't be possible, but...
+	
+	int i;
+	for (i = 0; i < done; i++) bar[i] = '=';
+	bar[i] = 0;
+	
+	sprintf(fmt, "[%%-%ds]", COLS-2);
+	mvwprintw(wmain, r, 0, fmt, bar);
+	fflush(stdout);
+}
+
 int showmenu(const char* title, vector<char*>& options) {
 	int ch;
 	int line = 0;
@@ -90,7 +109,7 @@ int showmenu(const char* title, vector<char*>& options) {
 	del_panel(pmenu);
 	delwin(menu);
 	refresh();
-	return line-1;
+	return line;
 }
 
 int showmenu(list<Mod>& options) {
