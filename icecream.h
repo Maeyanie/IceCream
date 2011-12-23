@@ -38,6 +38,7 @@ void buildjar(const struct BukkitInfo*, vector<Mod>&);
 
 // ui.cpp
 void status(const char* fmt, ...);
+void log(const char* fmt, ...);
 int showmenu(vector<char*>& options);
 int showmenu(list<Mod>& options);
 

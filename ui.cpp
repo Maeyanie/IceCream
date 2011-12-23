@@ -10,6 +10,15 @@ void status(const char* fmt, ...) {
 	va_end(vl);
 }
 
+void log(const char* fmt, ...) {
+	// TODO
+	va_list vl;
+	va_start(vl, fmt);
+	vprintf(fmt, vl);
+	fflush(stdout);
+	va_end(vl);
+}
+
 int showmenu(vector<char*>& options) {
 	int ret;
 	status("");
