@@ -33,11 +33,12 @@ int progresscb(void* clientp, double dltotal, double dlnow, double ultotal, doub
 	return 0;
 }
 
-void curlsetup() {
+static void curlsetup() {
 	curl = curl_easy_init();
 	if (!curl) die("cURL init failed.");
 	curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/0.3 (http://icecream.maeyanie.com)");
 	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, &progresscb);
+	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 	//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
 }
 
