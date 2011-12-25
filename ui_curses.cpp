@@ -76,7 +76,7 @@ void pbupdate(double done) {
 	doupdate();
 }
 
-void showinfo(WINDOW* info, const Mod& mod) {
+static void showinfo(WINDOW* info, const Mod& mod) {
 	int r = 0;
 	int w = 0;
 	char* text;
