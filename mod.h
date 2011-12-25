@@ -7,14 +7,16 @@
 class Mod {
 public:
 	char* name;
+	char* author;
 	char* desc;
 	char* url;
 	char* filename;
 	vector<char*> depends;
 
-	Mod() { name = desc = url = filename = NULL; }
+	Mod() { name = author = desc = url = filename = NULL; }
 	Mod(const Mod& rhs) {
 		name = strdup(rhs.name);
+		author = strdup(rhs.author);
 		desc = strdup(rhs.desc);
 		url = strdup(rhs.url);
 		filename = strdup(rhs.filename);
@@ -24,10 +26,11 @@ public:
 			depends[i] = strdup(rhs.depends[i]);
 		}
 	}
-	Mod(const YAML::Node& modnode);
+	Mod(const YAML::Node& globnode, const YAML::Node& modnode);
 
 	~Mod() {
 		if (name) free(name);
+		if (author) free(author);
 		if (desc) free(desc);
 		if (url) free(url);
 		if (filename) free(filename);

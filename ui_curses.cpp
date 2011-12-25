@@ -76,6 +76,36 @@ void pbupdate(double done) {
 	doupdate();
 }
 
+void showinfo(WINDOW* info, const Mod& mod) {
+	int r = 0;
+	int w = 0;
+	char* text;
+	char* word;
+	
+	mvwprintw(info, r++, 0, "Mod: %s\n", mod.name);
+	mvwprintw(info, r++, 0, "Author: %s\n", mod.author);
+	mvwprintw(info, r++, 0, "URL: %s\n", mod.url);
+	mvwprintw(info, r++, 0, "Filename: %s\n", mod.filename);
+	r++;
+	
+	mvwprintw(info, r++, 0, "Description:\n");
+	text = strdup(mod.desc);
+	word = strtok(text, " ");
+	while (word) {
+		if (w + strlen(word) + 1 > 20) {
+			waddch(info, '\n');
+			wmove(info, r++, 0);
+			waddstr(info, word);
+			w = strlen(word);
+		} else {
+			waddch(info, ' ');
+			waddstr(info, word);
+			w += strlen(word) + 1;
+		}
+		word = strtok(NULL, " ");
+	}
+}
+
 int showmenu(const char* title, vector<char*>& options) {
 	int ch;
 	int line = 0;
@@ -125,8 +155,10 @@ int showmenu(list<Mod>& options) {
 	int ch;
 	int line = 0;
 	int offset = 0;
-	WINDOW* menu = newwin(LINES-1, COLS, 0, 0);
+	WINDOW* menu = newwin(LINES-1, COLS-20, 0, 0);
 	PANEL* pmenu = new_panel(menu);
+	WINDOW* info = newwin(LINES-1, 20, 0, COLS-20);
+	PANEL* pinfo = new_panel(info);
 	status(" ");
 	
 	wprintw(menu, "Select Mods");
@@ -146,7 +178,10 @@ int showmenu(list<Mod>& options) {
 		}
 		while (x <= end && i != options.end()) {
 			mvwprintw(menu, x-start+3, 0, "%d: %s\n", x, (*i).desc);
-			if (x == line) mvwchgat(menu, x-start+3, 0, -1, A_REVERSE, 0, NULL);
+			if (x == line) {
+				mvwchgat(menu, x-start+3, 0, -1, A_REVERSE, 0, NULL);
+				showinfo(info, *i);
+			}
 			x++, i++;
 		}
 		end = x;
