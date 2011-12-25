@@ -83,16 +83,19 @@ void showinfo(WINDOW* info, const Mod& mod) {
 	char* word;
 	
 	mvwprintw(info, r++, 0, "Mod: %s\n", mod.name);
+	mvwprintw(info, r++, 0, "\n");
 	mvwprintw(info, r++, 0, "Author: %s\n", mod.author);
+	mvwprintw(info, r++, 0, "\n");
 	mvwprintw(info, r++, 0, "URL: %s\n", mod.url);
+	mvwprintw(info, r++, 0, "\n");
 	mvwprintw(info, r++, 0, "Filename: %s\n", mod.filename);
-	r++;
+	mvwprintw(info, r++, 0, "\n");
 	
 	mvwprintw(info, r++, 0, "Description:\n");
 	text = strdup(mod.desc);
 	word = strtok(text, " ");
 	while (word) {
-		if (w + strlen(word) + 1 > 20) {
+		if (w + strlen(word) + 1 >= getmaxx(info)) {
 			waddch(info, '\n');
 			wmove(info, r++, 0);
 			waddstr(info, word);
@@ -104,6 +107,10 @@ void showinfo(WINDOW* info, const Mod& mod) {
 		}
 		word = strtok(NULL, " ");
 	}
+	free(text);
+	waddch(info, '\n');
+	r++;
+	mvwprintw(info, r++, 0, "\n");
 }
 
 int showmenu(const char* title, vector<char*>& options) {
@@ -155,9 +162,9 @@ int showmenu(list<Mod>& options) {
 	int ch;
 	int line = 0;
 	int offset = 0;
-	WINDOW* menu = newwin(LINES-1, COLS-20, 0, 0);
+	WINDOW* menu = newwin(LINES-1, COLS/2, 0, 0);
 	PANEL* pmenu = new_panel(menu);
-	WINDOW* info = newwin(LINES-1, 20, 0, COLS-20);
+	WINDOW* info = newwin(LINES-1, COLS+1/2, 0, COLS/2);
 	PANEL* pinfo = new_panel(info);
 	status(" ");
 	
@@ -206,6 +213,8 @@ int showmenu(list<Mod>& options) {
 		}
 	} while (ch != '\n');
 	
+	del_panel(pinfo);
+	delwin(info);
 	del_panel(pmenu);
 	delwin(menu);
 	update_panels();

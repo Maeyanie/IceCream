@@ -44,7 +44,7 @@ void curlsetup() {
 char* fetchurl(const char* url) {
 	char* ret = NULL;
 	struct FetchInfo fi;
-	int rc;
+	long rc;
 
 	if (!curl) curlsetup();
 	
@@ -57,6 +57,9 @@ char* fetchurl(const char* url) {
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	rc = curl_easy_perform(curl);
 	if (rc) die("Could not fetch URL '%s'\n", url);
+
+	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &rc);
+	if (rc/100 > 3) die("Could not fetch URL '%s': HTTP %ld\n", url, rc);
 	
 	return ret;
 }

@@ -2,7 +2,7 @@ OBJS=icecream.o jar.o list.o mod.o web.o
 
 all: icecream icecream-curses
 
-%.o: %.cpp icecream.h
+%.o: %.cpp icecream.h mod.h
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 icecream: $(OBJS) ui_simple.o

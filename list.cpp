@@ -108,6 +108,7 @@ void modlist(vector<Mod>* mods, const char* bukkitcode) {
 	for (unsigned int i = 0; i < urls.size(); i++) {
 		status("Fetching list: %s", names[i]);
 		char* listtext = fetchurl(urls[i]);
+		if (listtext == NULL) { log("Could not fetch list: %s\n", names[i]); continue; }
 
 		istringstream in(listtext);
 		Parser parser(in);
