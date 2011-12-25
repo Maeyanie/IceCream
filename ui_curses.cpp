@@ -111,7 +111,6 @@ void showinfo(WINDOW* info, const Mod& mod) {
 	}
 	free(text);
 	waddch(info, '\n');
-	r++;
 }
 
 int showmenu(const char* title, vector<char*>& options) {
