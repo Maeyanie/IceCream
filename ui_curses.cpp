@@ -82,6 +82,8 @@ void showinfo(WINDOW* info, const Mod& mod) {
 	char* text;
 	char* word;
 	
+	werase(info);
+	
 	mvwprintw(info, r++, 0, "Mod: %s\n", mod.name);
 	mvwprintw(info, r++, 0, "\n");
 	mvwprintw(info, r++, 0, "Author: %s\n", mod.author);
@@ -110,7 +112,6 @@ void showinfo(WINDOW* info, const Mod& mod) {
 	free(text);
 	waddch(info, '\n');
 	r++;
-	mvwprintw(info, r++, 0, "\n");
 }
 
 int showmenu(const char* title, vector<char*>& options) {
