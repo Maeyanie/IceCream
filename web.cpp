@@ -67,7 +67,7 @@ char* fetchurl(const char* url) {
 
 void fetchurl(const char* url, const char* file) {
 	FILE* fp;
-	int rc;
+	long rc;
 
 	if (!curl) curlsetup();
 	
@@ -80,13 +80,16 @@ void fetchurl(const char* url, const char* file) {
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	rc = curl_easy_perform(curl);
 	if (rc) die("Could not fetch URL '%s' to file '%s'\n", url, file);
-	
+
+	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &rc);
+	if (rc/100 > 3) die("Could not fetch URL '%s': HTTP %ld\n", url, rc);
+		
 	fclose(fp);
 }
 
 void fetchfiles(vector<FileDownload>& files) {
 	FILE* fp;
-	int rc;
+	long rc;
 	
 	if (!curl) curlsetup();
 
@@ -104,6 +107,9 @@ void fetchfiles(vector<FileDownload>& files) {
 		rc = curl_easy_perform(curl);
 		if (rc) die("Could not fetch URL '%s' to file '%s'\n", files[i].url, files[i].filename);
 		
+		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &rc);
+		if (rc/100 > 3) die("Could not fetch URL '%s': HTTP %ld\n", files[i].url, rc);
+	
 		fclose(fp);
 		printf("\n");
 	}
