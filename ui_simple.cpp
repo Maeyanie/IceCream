@@ -21,6 +21,8 @@ void log(const char* fmt, ...) {
 	va_end(vl);
 }
 
+void pbstart() {}
+
 void pbupdate(double done) {
 	char bar[51];
 
@@ -34,6 +36,8 @@ void pbupdate(double done) {
 	printf("\r[%-50s]", bar);
 	fflush(stdout);
 }
+
+void pbdone() {}
 
 int showmenu(const char* title, vector<char*>& options) {
 	int ret;

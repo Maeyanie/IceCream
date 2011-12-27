@@ -62,8 +62,8 @@ struct BukkitInfo* bukkitversion() {
 }
 
 void modlist(vector<Mod>* mods, const char* bukkitcode) {
-	char* metaurl = (char*)malloc(strlen(METAURL) + strlen(bukkitcode) + 1);
-	sprintf(metaurl, "%s%s", METAURL, bukkitcode);
+	char* metaurl = (char*)malloc(strlen(METAURL) + strlen(bukkitcode) + 6);
+	sprintf(metaurl, "%s-%s.txt", METAURL, bukkitcode);
 	
 	status("Fetching metalist...");
 	char* metatext = fetchurl(metaurl);

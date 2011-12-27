@@ -55,6 +55,10 @@ void log(const char* fmt, ...) {
 	va_end(vl);
 }
 
+void pbstart() {
+	wprintw(wmain, "\n");
+}
+
 void pbupdate(double done) {
 	int r, c;
 	char fmt[16];
@@ -74,6 +78,10 @@ void pbupdate(double done) {
 	
 	update_panels();
 	doupdate();
+}
+
+void pbdone() {
+	wprintw(wmain, "\n");
 }
 
 static void showinfo(WINDOW* info, const Mod& mod) {

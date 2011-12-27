@@ -10,8 +10,8 @@
 #include <list>
 using namespace std;
 
-#define BUKKITURL "http://icecream.maeyanie.com/client/bukkitlist.php"
-#define METAURL "http://icecream.maeyanie.com/client/metalist.php?code="
+#define BUKKITURL "http://icecream.maeyanie.com/client/bukkitlist.txt"
+#define METAURL "http://icecream.maeyanie.com/client/metalist"
 #define BUKKITJAR "craftbukkit.jar"
 
 #include "mod.h"
@@ -41,7 +41,9 @@ void uiinit();
 void uicleanup();
 void status(const char* fmt, ...) __attribute__((format(printf, 1, 2)));
 void log(const char* fmt, ...) __attribute__((format(printf, 1, 2)));
+void pbstart();
 void pbupdate(double done);
+void pbdone();
 int showmenu(const char* title, vector<char*>& options);
 int showmenu(list<Mod>& options);
 int confirm(struct BukkitInfo* binfo, vector<Mod>& mods);
