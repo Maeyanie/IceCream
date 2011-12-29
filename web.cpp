@@ -36,7 +36,7 @@ int progresscb(void* clientp, double dltotal, double dlnow, double ultotal, doub
 static void curlsetup() {
 	curl = curl_easy_init();
 	if (!curl) die("cURL init failed.");
-	curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/0.3 (http://icecream.maeyanie.com)");
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/0.4 (http://icecream.maeyanie.com)");
 	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, &progresscb);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 	//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
@@ -57,10 +57,18 @@ char* fetchurl(const char* url) {
 
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	rc = curl_easy_perform(curl);
-	if (rc) die("Could not fetch URL '%s'\n", url);
+	if (rc) {
+		log("Could not fetch URL '%s'\n", url);
+		if (ret) free(ret);
+		return NULL;
+	}
 
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &rc);
-	if (rc >= 400) die("Could not fetch URL '%s': HTTP %ld\n", url, rc);
+	if (rc >= 400) {
+		log("Could not fetch URL '%s': HTTP %ld\n", url, rc);
+		if (ret) free(ret);
+		return NULL;
+	}
 	
 	return ret;
 }
