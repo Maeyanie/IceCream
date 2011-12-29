@@ -5,6 +5,9 @@
 #include <sstream>
 using namespace YAML;
 
+static const char* bukkiturl[] = BUKKITURL;
+static const char* metaurl[] = METAURL;
+
 struct BukkitInfo* bukkitversion() {
 	vector<char*> urls;
 	vector<char*> codes;
@@ -13,7 +16,10 @@ struct BukkitInfo* bukkitversion() {
 
 	status("Fetching list of Bukkit versions...");
 
-	char* versiontext = fetchurl(BUKKITURL);
+	char* versiontext = NULL;
+	for (int x = 0; x < BUKKITURLS && (!versiontext || !versiontext[0]); x++) {
+		versiontext = fetchurl(bukkiturl[x]);
+	}
 	if (!versiontext || !versiontext[0]) die("Could not fetch list of Bukkit versions.\n");
 	
 	char* line;
@@ -62,18 +68,29 @@ struct BukkitInfo* bukkitversion() {
 }
 
 void modlist(vector<Mod>* mods, const char* bukkitcode) {
-	char* metaurl = (char*)malloc(strlen(METAURL) + strlen(bukkitcode) + 6);
-	sprintf(metaurl, "%s-%s.txt", METAURL, bukkitcode);
+	char* url = NULL;
+	unsigned int urllen = 0;
+	char* metatext = NULL;
 	
 	status("Fetching metalist...");
-	char* metatext = fetchurl(metaurl);
+
+	for (int x = 0; x < METAURLS && (!metatext || !metatext[0]); x++) {
+		if (strlen(metaurl[x]) + strlen(bukkitcode) + 6 > urllen) {
+			url = (char*)realloc(url, strlen(metaurl[x]) + strlen(bukkitcode) + 6);
+			urllen = strlen(metaurl[x]) + strlen(bukkitcode) + 6;
+		}
+		sprintf(url, "%s-%s.txt", metaurl[x], bukkitcode);
+	
+		metatext = fetchurl(url);
+	}
+	if (!metatext || !metatext[0]) die("Could not fetch metalist.\n");
 	//printf("metatext='%s'\n", metatext);
 	
 	vector<char*> urls;
 	vector<char*> names;
 
 	char* line;
-	char* url, * name;
+	char* name;
 	#ifdef __WIN32__
 	vector<char*> lines;	
 	line = strtok(metatext, "\r\n");

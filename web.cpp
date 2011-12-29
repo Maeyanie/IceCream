@@ -73,7 +73,7 @@ char* fetchurl(const char* url) {
 	return ret;
 }
 
-void fetchurl(const char* url, const char* file) {
+int fetchurl(const char* url, const char* file) {
 	FILE* fp;
 	long rc;
 
@@ -89,42 +89,21 @@ void fetchurl(const char* url, const char* file) {
 	pbstart();
 	rc = curl_easy_perform(curl);
 	pbdone();
-	if (rc) die("Could not fetch URL '%s' to file '%s'\n", url, file);
+	if (rc) {
+		log("Could not fetch URL '%s' to file '%s'\n", url, file);
+		fclose(fp);
+		return 0;
+	}
 
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &rc);
-	if (rc >= 400) die("Could not fetch URL '%s': HTTP %ld\n", url, rc);
+	if (rc >= 400) {
+		log("Could not fetch URL '%s': HTTP %ld\n", url, rc);
+		fclose(fp);
+		return 0;
+	}
 		
 	fclose(fp);
-}
-
-void fetchfiles(vector<FileDownload>& files) {
-	FILE* fp;
-	long rc;
-	
-	if (!curl) curlsetup();
-
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &fetchurlfile);
-	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
-	
-	for (unsigned int i = 0; i < files.size(); i++) {
-		status("Downloading: %s", files[i].name);
-		curl_easy_setopt(curl, CURLOPT_URL, files[i].url);
-		
-		fp = fopen(files[i].filename, "wb");
-		if (!fp) die("Could not open file '%s' for writing: %s\n", files[i].filename, strerror(errno));		
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-		
-		pbstart();
-		rc = curl_easy_perform(curl);
-		pbdone();
-		if (rc) die("Could not fetch URL '%s' to file '%s'\n", files[i].url, files[i].filename);
-		
-		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &rc);
-		if (rc >= 400) die("Could not fetch URL '%s': HTTP %ld\n", files[i].url, rc);
-	
-		fclose(fp);
-		printf("\n");
-	}
+	return 1;
 }
 
 

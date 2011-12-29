@@ -10,14 +10,19 @@ void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
 	const char* name;
 	int err;
 	int index;
+	int rc;
 
 	status("Downloading files...");
-	vector<FileDownload> dlfiles;
-	dlfiles.push_back(FileDownload("Bukkit", binfo->url, BUKKITJAR));
+	
+	status("Downloading: Bukkit");
+	if (!fetchurl(binfo->url, BUKKITJAR))
+		die("Could not download craftbukkit.jar from %s\n", binfo->url);
+	
 	for (vector<Mod>::iterator i = mods.begin(); i != mods.end(); ++i) {
-		dlfiles.push_back(FileDownload((*i).name, (*i).url, (*i).filename));
+		status("Downloading: %s", i->name);
+		rc = fetchurl(i->url, i->filename);
+		if (!rc) die("Could not download mod %s from %s\n", i->name, i->url);
 	}
-	fetchfiles(dlfiles);
 	
 	status("Building Bukkit jar: Preparing...");
 	bzp = zip_open(BUKKITJAR, ZIP_CHECKCONS, &err);

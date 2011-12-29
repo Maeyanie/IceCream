@@ -10,8 +10,18 @@
 #include <list>
 using namespace std;
 
-#define BUKKITURL "http://icecream.maeyanie.com/client/bukkitlist.txt"
-#define METAURL "http://icecream.maeyanie.com/client/metalist"
+#define BUKKITURL { \
+	"http://icecream.maeyanie.com/client/bukkitlist.txt", \
+	"https://d186ocprvpb7jc.cloudfront.net/client/bukkitlist.txt", \
+	"https://icecreambukkit.s3.amazonaws.com/client/bukkitlist.txt" \
+	}
+#define BUKKITURLS 3
+#define METAURL { \
+	"http://icecream.maeyanie.com/client/metalist", \
+	"https://d186ocprvpb7jc.cloudfront.net/client/metalist", \
+	"https://icecreambukkit.s3.amazonaws.com/client/metalist" \
+	}
+#define METAURLS 3
 #define BUKKITJAR "craftbukkit.jar"
 
 #include "mod.h"
@@ -22,13 +32,6 @@ struct BukkitInfo {
 	char* option;
 };
 
-struct FileDownload {
-	const char* name;
-	const char* url;
-	const char* filename;
-	
-	FileDownload(const char* n, const char* u, const char* f) : name(n), url(u), filename(f) {};
-};
 
 
 struct BukkitInfo* bukkitversion();
@@ -50,8 +53,7 @@ int confirm(struct BukkitInfo* binfo, vector<Mod>& mods);
 
 // web.cpp
 char* fetchurl(const char* url);
-void fetchurl(const char* url, const char* file);
-void fetchfiles(vector<FileDownload>& files);
+int fetchurl(const char* url, const char* file);
 
 #define die(a...) realdie(__FILE__, __LINE__, a)
 void realdie(const char* file, int line, const char* fmt, ...) __attribute__((format(printf, 3, 4)));
