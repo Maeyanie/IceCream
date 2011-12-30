@@ -184,7 +184,7 @@ void processdeps(vector<Mod>* mods, list<Mod>* modlist, const Mod& mod) {
 				break;
 			}
 		}
-		if (found == 0) printf("Warning: Unsatisfied dependency '%s'\n", dep);
+		if (found == 0) log("Warning: Unsatisfied dependency '%s'\n", dep);
 	}
 }
 
