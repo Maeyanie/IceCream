@@ -157,6 +157,17 @@ int showmenu(const char* title, vector<char*>& options) {
 			if (line >= end) line = end-1;
 			if (line+start+4 >= LINES) offset++;
 			break;
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			line = ch - '1';
+			break;
 		}
 	} while (ch != '\n');
 	
@@ -170,6 +181,7 @@ int showmenu(list<Mod>& options) {
 	int ch;
 	int line = 0;
 	int offset = 0;
+	int typed = 0;
 	WINDOW* menu = newwin(LINES-1, COLS/2, 0, 0);
 	PANEL* pmenu = new_panel(menu);
 	WINDOW* info = newwin(LINES-1, COLS+1/2, 0, COLS/2);
@@ -212,11 +224,30 @@ int showmenu(list<Mod>& options) {
 				offset--;
 				if (offset < 0) offset = 0;
 			}
+			if (typed) status(" ");
+			typed = 0;
 			break;
 		case KEY_DOWN:
 			line++;
 			if (line >= end) line = end-1;
 			if (line+start+4 >= LINES) offset++;
+			if (typed) status(" ");
+			typed = 0;
+			break;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			typed *= 10;
+			typed += ch - '0';
+			line = typed;
+			status("%d", typed);
 			break;
 		}
 	} while (ch != '\n');
