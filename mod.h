@@ -9,17 +9,21 @@ public:
 	char* name;
 	char* author;
 	char* desc;
-	char* url;
 	char* filename;
+	vector<char*> url;
 	vector<char*> depends;
 
-	Mod() { name = author = desc = url = filename = NULL; }
+	Mod() { name = author = desc = filename = NULL; }
 	Mod(const Mod& rhs) {
 		name = strdup(rhs.name);
 		author = strdup(rhs.author);
 		desc = strdup(rhs.desc);
-		url = strdup(rhs.url);
 		filename = strdup(rhs.filename);
+
+		url.resize(rhs.url.size());
+		for (unsigned int i = 0; i < rhs.url.size(); i++) {
+			url[i] = strdup(rhs.url[i]);
+		}
 		
 		depends.resize(rhs.depends.size());
 		for (unsigned int i = 0; i < rhs.depends.size(); i++) {
@@ -32,8 +36,10 @@ public:
 		if (name) free(name);
 		if (author) free(author);
 		if (desc) free(desc);
-		if (url) free(url);
 		if (filename) free(filename);
+		for (vector<char*>::iterator i = url.begin(); i != url.end(); ++i) {
+			free(*i);
+		}
 		for (vector<char*>::iterator i = depends.begin(); i != depends.end(); ++i) {
 			free(*i);
 		}

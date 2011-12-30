@@ -13,7 +13,21 @@ Mod::Mod(const YAML::Node& globnode, const YAML::Node& modnode) {
 	
 	modnode["name"] >> name;
 	modnode["desc"] >> desc;
-	modnode["url"] >> url;
+	
+	switch (modnode["url"].Type()) {
+	case NodeType::Scalar:
+		modnode["url"] >> value;
+		url.push_back(value);
+		break;
+	case NodeType::Sequence:
+		for (YAML::Iterator i = modnode["url"].begin(); i != modnode["url"].end(); ++i) {
+			*i >> value;
+			url.push_back(value);
+		}
+		break;
+	default:
+		die("url: node was not Scalar or Sequence.\n");	
+	}
 	
 	if ((key = modnode.FindValue("author"))) {
 		*key >> author;
@@ -26,7 +40,7 @@ Mod::Mod(const YAML::Node& globnode, const YAML::Node& modnode) {
 	if ((key = modnode.FindValue("filename"))) {
 		*key >> filename;
 	} else {
-		filename = strdup(strrchr(url, '/') + 1);
+		filename = strdup(strrchr(url[0], '/') + 1);
 	}
 	
 	if ((key = modnode.FindValue("depends"))) {

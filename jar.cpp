@@ -20,8 +20,11 @@ void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
 	
 	for (vector<Mod>::iterator i = mods.begin(); i != mods.end(); ++i) {
 		status("Downloading: %s", i->name);
-		rc = fetchurl(i->url, i->filename);
-		if (!rc) die("Could not download mod %s from %s\n", i->name, i->url);
+		rc = 0;
+		for (unsigned int u = 0; u < i->url.size() && !rc; u++) {
+			rc = fetchurl(i->url[u], i->filename);
+		}
+		if (!rc) die("Could not download mod %s from any URL\n", i->name);
 	}
 	
 	status("Building Bukkit jar: Preparing...");

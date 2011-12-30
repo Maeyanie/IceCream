@@ -96,7 +96,7 @@ static void showinfo(WINDOW* info, const Mod& mod) {
 	mvwprintw(info, r++, 0, "\n");
 	mvwprintw(info, r++, 0, "Author: %s\n", mod.author);
 	mvwprintw(info, r++, 0, "\n");
-	mvwprintw(info, r++, 0, "URL: %s\n", mod.url);
+	mvwprintw(info, r++, 0, "URL: %s\n", mod.url[0]);
 	mvwprintw(info, r++, 0, "\n");
 	mvwprintw(info, r++, 0, "Filename: %s\n", mod.filename);
 	mvwprintw(info, r++, 0, "\n");
