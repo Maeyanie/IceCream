@@ -11,8 +11,15 @@ Mod::Mod(const YAML::Node& globnode, const YAML::Node& modnode) {
 	const Node* key;
 	char* value;
 	
-	modnode["name"] >> name;
-	modnode["desc"] >> desc;
+	if (modnode.FindValue("mod")) {
+		modnode["mod"] >> mod;
+		modnode["name"] >> name;
+		modnode["desc"] >> desc;
+	} else { // Backwards compatible mode for <= 0.3
+		modnode["name"] >> mod;
+		modnode["desc"] >> name;
+		desc = strdup("");
+	}
 	
 	switch (modnode["url"].Type()) {
 	case NodeType::Scalar:

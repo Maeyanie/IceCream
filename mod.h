@@ -6,6 +6,7 @@
 
 class Mod {
 public:
+	char* mod;
 	char* name;
 	char* author;
 	char* desc;
@@ -13,8 +14,9 @@ public:
 	vector<char*> url;
 	vector<char*> depends;
 
-	Mod() { name = author = desc = filename = NULL; }
+	Mod() { mod = name = author = desc = filename = NULL; }
 	Mod(const Mod& rhs) {
+		mod = strdup(rhs.mod);
 		name = strdup(rhs.name);
 		author = strdup(rhs.author);
 		desc = strdup(rhs.desc);
@@ -33,6 +35,7 @@ public:
 	Mod(const YAML::Node& globnode, const YAML::Node& modnode);
 
 	~Mod() {
+		if (mod) free(mod);
 		if (name) free(name);
 		if (author) free(author);
 		if (desc) free(desc);
@@ -48,26 +51,26 @@ public:
 	
 	int isdepend(const Mod* rhs) const {
 		for (vector<char*>::const_iterator i = depends.begin(); i != depends.end(); ++i) {
-			if (!strcasecmp(rhs->name, *i)) return 1;
+			if (!strcasecmp(rhs->mod, *i)) return 1;
 		}
 		return 0;
 	}
 	
 	int operator==(const Mod& rhs) const {
-		return !strcasecmp(name, rhs.name);
+		return !strcasecmp(mod, rhs.mod);
 	}
 	int operator==(const char* rhs) const {
-		return !strcasecmp(name, rhs);
+		return !strcasecmp(mod, rhs);
 	}
 	int operator<(const Mod& rhs) const {
 		if (isdepend(&rhs)) return 0;
 		if (rhs.isdepend(this)) return 1;
-		return strcasecmp(name, rhs.name) < 0;
+		return strcasecmp(mod, rhs.mod) < 0;
 	}
 	int operator>(const Mod& rhs) const {
 		if (isdepend(&rhs)) return 1;
 		if (rhs.isdepend(this)) return 0;
-		return strcasecmp(name, rhs.name) > 0;
+		return strcasecmp(mod, rhs.mod) > 0;
 	}
 };
 

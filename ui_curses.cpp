@@ -92,7 +92,9 @@ static void showinfo(WINDOW* info, const Mod& mod) {
 	
 	werase(info);
 	
-	mvwprintw(info, r++, 0, "Mod: %s\n", mod.name);
+	mvwprintw(info, r++, 0, "Name: %s\n", mod.name);
+	mvwprintw(info, r++, 0, "\n");
+	mvwprintw(info, r++, 0, "Mod: %s\n", mod.mod);
 	mvwprintw(info, r++, 0, "\n");
 	mvwprintw(info, r++, 0, "Author: %s\n", mod.author);
 	mvwprintw(info, r++, 0, "\n");
@@ -107,6 +109,7 @@ static void showinfo(WINDOW* info, const Mod& mod) {
 	while (word) {
 		if (w + strlen(word) + 1 >= getmaxx(info)) {
 			waddch(info, '\n');
+			if (r == LINES-1) break;
 			wmove(info, r++, 0);
 			waddstr(info, word);
 			w = strlen(word);
@@ -204,7 +207,7 @@ int showmenu(list<Mod>& options) {
 			x++;
 		}
 		while (x <= end && i != options.end()) {
-			mvwprintw(menu, x-start+3, 0, "%d: %s\n", x, (*i).desc);
+			mvwprintw(menu, x-start+3, 0, "%d: %s\n", x, (*i).name);
 			if (x == line) {
 				mvwchgat(menu, x-start+3, 0, -1, A_REVERSE, 0, NULL);
 				showinfo(info, *i);
