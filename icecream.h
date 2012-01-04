@@ -10,18 +10,33 @@
 #include <list>
 using namespace std;
 
+#ifdef __WIN32__
 #define BUKKITURL { \
+	"http://d186ocprvpb7jc.cloudfront.net/client/bukkitlist.txt", \
+	"http://icecreambukkit.s3.amazonaws.com/client/bukkitlist.txt" \
 	"http://icecream.maeyanie.com/client/bukkitlist.txt", \
-	"https://d186ocprvpb7jc.cloudfront.net/client/bukkitlist.txt", \
-	"https://icecreambukkit.s3.amazonaws.com/client/bukkitlist.txt" \
 	}
 #define BUKKITURLS 3
 #define METAURL { \
+	"http://d186ocprvpb7jc.cloudfront.net/client/metalist", \
+	"http://icecreambukkit.s3.amazonaws.com/client/metalist" \
 	"http://icecream.maeyanie.com/client/metalist", \
-	"https://d186ocprvpb7jc.cloudfront.net/client/metalist", \
-	"https://icecreambukkit.s3.amazonaws.com/client/metalist" \
 	}
 #define METAURLS 3
+#else
+#define BUKKITURL { \
+	"https://d186ocprvpb7jc.cloudfront.net/client/bukkitlist.txt", \
+	"https://icecreambukkit.s3.amazonaws.com/client/bukkitlist.txt" \
+	"http://icecream.maeyanie.com/client/bukkitlist.txt", \
+	}
+#define BUKKITURLS 3
+#define METAURL { \
+	"https://d186ocprvpb7jc.cloudfront.net/client/metalist", \
+	"https://icecreambukkit.s3.amazonaws.com/client/metalist" \
+	"http://icecream.maeyanie.com/client/metalist", \
+	}
+#define METAURLS 3
+#endif
 #define BUKKITJAR "craftbukkit.jar"
 
 #include "mod.h"
