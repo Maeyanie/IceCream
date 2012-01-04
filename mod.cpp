@@ -56,6 +56,13 @@ Mod::Mod(const YAML::Node& globnode, const YAML::Node& modnode) {
 			depends.push_back(value);
 		}
 	}
+
+	if ((key = modnode.FindValue("protect"))) {
+		for (YAML::Iterator i = key->begin(); i != key->end(); ++i) {
+			(*i) >> value;
+			protect.push_back(value);
+		}
+	}
 }
 
 

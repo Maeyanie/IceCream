@@ -49,7 +49,15 @@ void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
 		for (int x = 0; x < count; x++) {
 			name = zip_get_name(mzp, x, 0);
 			index = zip_name_locate(bzp, name, ZIP_FL_NOCASE);
-			//printf(" - %d: %s (%d)\n", x, name, index);
+			//log(" - %d: %s (%d)\n", x, name, index);
+			int protect = 0;
+			for (vector<Mod>::iterator j = mods.begin(); j != i; ++j) {
+				if (j->isprotect(name)) { protect = 1; break; }
+			}
+			if (protect) {
+				//log("    Skipping due to protection.\n");
+				continue;
+			}
 			
 			source = zip_source_zip(bzp, mzp, x, 0, 0, -1);
 			if (source == NULL) { die("Could not read %s/%s: %s\n", (*i).filename, name, zip_strerror(bzp)); }
