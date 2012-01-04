@@ -179,7 +179,7 @@ void processdeps(vector<Mod>* mods, list<Mod>* modlist, const Mod& mod) {
 				modlist->remove(depmod);
 				processdeps(mods, modlist, depmod);
 				mods->push_back(depmod);
-				log("Added as dependency: %s\n", depmod.desc);
+				log("Added as dependency: %s\n", depmod.name);
 				found = 1;
 				break;
 			}

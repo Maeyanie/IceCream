@@ -58,7 +58,7 @@ int showmenu(list<Mod>& options) {
 
 	printf("1: Done\n");
 	for (list<Mod>::iterator i = options.begin(); i != options.end(); i++) {
-		printf("%d: %s\n", ++x, (*i).desc);
+		printf("%d: %s\n", ++x, (*i).name);
 	}
 	fflush(stdout);
 	scanf(" %d", &ret);
