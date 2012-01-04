@@ -38,7 +38,11 @@ int main(int argc, char* argv[]) {
 	}
 
 	//printf("All done. You can find your modded Bukkit jar at: %s/%s\n", dir, BUKKITJAR);
-	printf("All done.\n");
+	printf("All done. The '%s' file in the current directory now contains all selected mods.\n", BUKKITJAR);
+	
+	#ifdef __WIN32__
+	system("pause");
+	#endif
 	return 0;
 }
 
