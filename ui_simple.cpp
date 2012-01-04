@@ -37,7 +37,7 @@ void pbupdate(double done) {
 	fflush(stdout);
 }
 
-void pbdone() {}
+void pbdone() { printf("\n"); }
 
 int showmenu(const char* title, vector<char*>& options) {
 	int ret;
