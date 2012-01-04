@@ -63,7 +63,6 @@ void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
 			
 			source = zip_source_zip(bzp, mzp, x, 0, 0, -1);
 			if (source == NULL) { die("Could not read %s/%s: %s\n", (*i).filename, name, zip_strerror(bzp)); }
-			sources.push_back(source);
 			
 			if (index == -1) {
 				err = zip_add(bzp, name, source);
