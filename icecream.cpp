@@ -1,8 +1,16 @@
 #include "icecream.h"
 
+struct Settings settings;
+
 int main(int argc, char* argv[]) {
 	struct BukkitInfo* binfo;
 	vector<Mod> mods;
+	
+	for (int i = 1; i < argc; i++) {
+		if (!strcmp(argv[i], "-v")) {
+			settings.verbose = 1;
+		}
+	}
 
 	uiinit();
 	

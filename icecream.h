@@ -47,6 +47,11 @@ struct BukkitInfo {
 	char* option;
 };
 
+extern struct Settings {
+	unsigned verbose:1;
+} settings;
+
+
 
 
 struct BukkitInfo* bukkitversion();

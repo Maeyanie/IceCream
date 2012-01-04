@@ -36,10 +36,10 @@ int progresscb(void* clientp, double dltotal, double dlnow, double ultotal, doub
 static void curlsetup() {
 	curl = curl_easy_init();
 	if (!curl) die("cURL init failed.");
-	curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/0.4 (http://icecream.maeyanie.com)");
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/0.5 (http://icecream.maeyanie.com)");
 	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, &progresscb);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-	//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+	if (settings.verbose) curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
 }
 
 char* fetchurl(const char* url) {
