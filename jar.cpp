@@ -4,6 +4,7 @@
 #include <zip.h>
 
 void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
+	list<struct zip*> zips;
 	struct zip* bzp;
 	struct zip* mzp;
 	struct zip_source* source;
@@ -44,6 +45,7 @@ void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
 			zip_error_to_str(errbuf, 256, err, errno);
 			die("Could not open '%s' for reading: %s\n", (*i).filename, errbuf);
 		}
+		zips.push_back(mzp);
 		
 		int count = zip_get_num_files(mzp); // Not sure how expensive this is...
 		for (int x = 0; x < count; x++) {
@@ -61,6 +63,7 @@ void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
 			
 			source = zip_source_zip(bzp, mzp, x, 0, 0, -1);
 			if (source == NULL) { die("Could not read %s/%s: %s\n", (*i).filename, name, zip_strerror(bzp)); }
+			sources.push_back(source);
 			
 			if (index == -1) {
 				err = zip_add(bzp, name, source);
@@ -69,14 +72,16 @@ void buildjar(const struct BukkitInfo* binfo, vector<Mod>& mods) {
 				err = zip_replace(bzp, index, source);
 				if (err == -1) die("Could not replace %s: %s\n", name, zip_strerror(bzp));
 			}
-			
-			// If we free or close these here, the zip_close() at the end crashes. Better just to leak them.
-			//zip_source_free(source);
 		}
+		// If we close this here, zip_close() at the end crashes.
 		//zip_close(mzp);
 	}
 	status("Building Bukkit jar: Done!");
 	
 	zip_close(bzp);
+
+	for (list<struct zip*>::iterator i = zips.begin(); i != zips.end(); i++) {
+		zip_close(*i);
+	}
 }
 
