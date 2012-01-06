@@ -18,13 +18,25 @@ Because it fills buckets, and comes in many flavours.
 
 
 *Prerequisites*
-IceCream relies on libcurl, libzip, and yaml-cpp.
+IceCream relies on libcurl, libzip, yaml-cpp, and optionally ncurses.
+
+Fedora:
+As of Fedora 16, it's kind enough to have packages for all needed libraries.
+Just run "yum install libcurl-devel libzip-devel yaml-cpp-devel ncurses-devel"
+
+Ubuntu:
+Run "apt-get install libcurl4-gnutls-dev libzip-dev libncurses5-dev" to get 
+most of the libraries needed. You'll have to download and compile yaml-cpp
+yourself.
+
 
 *Compiling*
 In theory, it should be as simple as 'make' if everything is where the compiler
 expects it. If not, you can define CXXFLAGS and LDFLAGS and/or edit the
 Makefile to get it to work. It's a simple enough program I haven't bothered
 with any sort of configure script.
+
+
 
 *License*
 IceCream is released under GNU GPL. I haven't yet bothered to add the license
