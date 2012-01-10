@@ -160,6 +160,22 @@ int showmenu(const char* title, vector<char*>& options) {
 			if (line >= end) line = end-1;
 			if (line+start+4 >= LINES) offset++;
 			break;
+		case KEY_PPAGE:
+			line -= LINES-4;
+			if (line < 0) line = 0;
+			while (line-1 <= start && offset > 0) offset--;
+			break;
+		case KEY_NPAGE:
+			line += LINES-4;
+			if (line >= end) line = end-1;
+			while (line+start+4 >= LINES) offset++;
+			break;
+		case KEY_HOME:
+			line = 0;
+			break;
+		case KEY_END:
+			line = end-1;
+			break;
 		case '1':
 		case '2':
 		case '3':
@@ -236,6 +252,22 @@ int showmenu(list<Mod>& options) {
 			if (line+start+4 >= LINES) offset++;
 			if (typed) status(" ");
 			typed = 0;
+			break;
+		case KEY_PPAGE:
+			line -= LINES-4;
+			if (line < 0) line = 0;
+			while (line-1 <= start && offset > 0) offset--;
+			break;
+		case KEY_NPAGE:
+			line += LINES-4;
+			if (line >= end) line = end-1;
+			while (line+start+4 >= LINES) offset++;
+			break;
+		case KEY_HOME:
+			line = 0;
+			break;
+		case KEY_END:
+			line = end-1;
 			break;
 		case '0':
 		case '1':
