@@ -64,53 +64,46 @@ void modlist(vector<Mod>* mods, const char* bukkitcode) {
 			url = (char*)realloc(url, strlen(metaurl[x]) + strlen(bukkitcode) + 6);
 			urllen = strlen(metaurl[x]) + strlen(bukkitcode) + 6;
 		}
-		sprintf(url, "%s-%s.txt", metaurl[x], bukkitcode);
+		sprintf(url, "%s-%s.yml", metaurl[x], bukkitcode);
 	
 		metatext = fetchurl(url);
 	}
 	if (!metatext || !metatext[0]) die("Could not fetch metalist.\n");
 	//printf("metatext='%s'\n", metatext);
-	
-	vector<char*> urls;
-	vector<char*> names;
 
-	char* line;
-	char* name;
-	#ifdef __WIN32__
-	vector<char*> lines;	
-	line = strtok(metatext, "\r\n");
-	while (line) {
-		lines.push_back(line);
-		line = strtok(NULL, "\r\n");
-	}
-	
-	for (int i = 0; i < lines.size(); i++) {
-		url = strtok(lines[i], " ");
-		name = strtok(NULL, "\r\n");
+	vector<ModList>	lists;
+	{
+		istringstream in(metatext);
+		Parser parser(in);
 		
-		urls.push_back(url);
-		names.push_back(name);
+		Node doc;
+		try {
+			while (parser.GetNextDocument(doc)) {
+				const Node& node = doc["lists"];
+				for (unsigned int j = 0; j < node.size(); j++) {
+					ModList list;
+					node[j]["name"] >> list.name;
+					for (unsigned int x = 0; x < node[j]["url"].size(); x++) {
+						char* url;
+						node[j]["url"][x] >> url;
+						list.url.push_back(url);
+					}
+					lists.push_back(list);
+				}
+			}
+		} catch (ParserException e) {
+			die("%s\n", e.what());
+		}
 	}
-	#else
-	char* pos;
-	line = strtok_r(metatext, "\r\n", &pos);
-	while (line) {
-		url = strtok(line, " ");
-		name = strtok(NULL, "\r\n");
-		
-		urls.push_back(url);
-		names.push_back(name);
-		
-		line = strtok_r(NULL, "\r\n", &pos);
-	}
-	#endif
 
 	list<Mod> modlist;
-
-	for (unsigned int i = 0; i < urls.size(); i++) {
-		status("Fetching list: %s", names[i]);
-		char* listtext = fetchurl(urls[i]);
-		if (listtext == NULL) { log("Could not fetch list: %s\n", names[i]); continue; }
+	for (unsigned int i = 0; i < lists.size(); i++) {
+		status("Fetching list: %s", lists[i].name);
+		char* listtext = NULL;
+		for (unsigned int u = 0; u < lists[i].url.size() && !listtext; u++) {
+			listtext = fetchurl(lists[i].url[u]);
+		}
+		if (!listtext || !listtext[0]) { log("Could not fetch list: %s\n", lists[i].name); continue; }
 
 		istringstream in(listtext);
 		Parser parser(in);

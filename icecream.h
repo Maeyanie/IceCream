@@ -66,6 +66,27 @@ public:
 	}
 };
 
+class ModList {
+public:
+	char* name;
+	vector<char*> url;
+	
+	ModList() { name = NULL; }
+	ModList(const ModList& rhs) {
+		name = strdup(rhs.name);
+		vecdup(url, rhs.url);
+	}
+	~ModList() {
+		if (name) free(name);
+		vecfree(url);
+	}
+	
+	ModList& operator=(const ModList& rhs) {
+		name = strdup(rhs.name);
+		vecdup(url, rhs.url);
+	}
+};
+
 extern struct Settings {
 	unsigned verbose:1;
 } settings;
