@@ -4,16 +4,23 @@
 #include <string.h>
 #include <yaml-cpp/yaml.h>
 
-extern inline void vecdup(vector<char*>& lhs, const vector<char*>& rhs) {
+inline void vecdup(vector<char*>& lhs, const vector<char*>& rhs) {
 	lhs.resize(rhs.size());
 	for (unsigned int i = 0; i < rhs.size(); i++) {
 		lhs[i] = strdup(rhs[i]);
 	}
 }
-extern inline void vecfree(vector<char*>& v) {
+
+inline void vecfree(vector<char*>& v) {
 	for (unsigned int i = 0; i < v.size(); i++) {
 		free(v[i]);
 	}
+}
+
+inline void operator>>(const YAML::Node& lhs, char*& rhs) {
+	string value;
+	lhs >> value;
+	rhs = strdup(value.c_str());
 }
 
 class Mod {

@@ -3,7 +3,7 @@
 struct Settings settings;
 
 int main(int argc, char* argv[]) {
-	struct BukkitInfo* binfo;
+	struct BukkitInfo binfo;
 	vector<Mod> mods;
 	
 	for (int i = 1; i < argc; i++) {
@@ -29,14 +29,14 @@ int main(int argc, char* argv[]) {
 
 	binfo = bukkitversion();
 	
-	modlist(&mods, binfo->code);
+	modlist(&mods, binfo.version);
 
-	if (!confirm(binfo, mods)) {
+	if (!confirm(&binfo, mods)) {
 		uicleanup();
 		return 0;
 	}
 	
-	buildjar(binfo, mods);
+	buildjar(&binfo, mods);
 	
 	status(" ");
 	uicleanup();

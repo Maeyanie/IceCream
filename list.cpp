@@ -8,9 +8,8 @@ using namespace YAML;
 static const char* bukkiturl[] = BUKKITURL;
 static const char* metaurl[] = METAURL;
 
-struct BukkitInfo* bukkitversion() {
-	vector<char*> urls;
-	vector<char*> codes;
+struct BukkitInfo bukkitversion() {
+	vector<BukkitInfo> bukkits;
 	vector<char*> options;
 	int r;
 
@@ -21,50 +20,36 @@ struct BukkitInfo* bukkitversion() {
 		versiontext = fetchurl(bukkiturl[x]);
 	}
 	if (!versiontext || !versiontext[0]) die("Could not fetch list of Bukkit versions.\n");
-	
-	char* line;
-	char* url, * code, * option;
-	#ifdef __WIN32__
-	// Windows doesn't have strtok_r().
-	vector<char*> lines;	
-	line = strtok(versiontext, "\r\n");
-	while (line) {
-		lines.push_back(line);
-		line = strtok(NULL, "\r\n");
-	}
-	
-	for (int i = 0; i < lines.size(); i++) {
-		url = strtok(lines[i], " ");
-		code = strtok(NULL, " ");
-		option = strtok(NULL, "\r\n");
+
+
+	istringstream in(versiontext);
+	Parser parser(in);
 		
-		urls.push_back(url);
-		codes.push_back(code);
-		options.push_back(option);
+	Node doc;
+	try {
+		while (parser.GetNextDocument(doc)) {
+			const Node& node = doc["bukkits"];
+			for (unsigned int j = 0; j < node.size(); j++) {
+				BukkitInfo bukkitinfo;
+				node[j]["version"] >> bukkitinfo.version;
+				node[j]["name"] >> bukkitinfo.name;
+				for (unsigned int x = 0; x < node[j]["url"].size(); x++) {
+					char* url;
+					node[j]["url"][x] >> url;
+					bukkitinfo.url.push_back(url);
+				}
+				bukkits.push_back(bukkitinfo);
+				options.push_back(strdup(bukkitinfo.name));
+			}
+		}
+	} catch (ParserException e) {
+		die("%s\n", e.what());
 	}
-	#else
-	char* pos;
-	line = strtok_r(versiontext, "\r\n", &pos);
-	while (line) {
-		url = strtok(line, " ");
-		code = strtok(NULL, " ");
-		option = strtok(NULL, "\r\n");
-		
-		urls.push_back(url);
-		codes.push_back(code);
-		options.push_back(option);
-		
-		line = strtok_r(NULL, "\r\n", &pos);
-	}
-	#endif
 	
 	r = showmenu("Select Bukkit Version", options);
+	vecfree(options);
 	
-	BukkitInfo* ret = new BukkitInfo();
-	ret->url = strdup(urls[r]);
-	ret->code = strdup(codes[r]);
-	ret->option = strdup(options[r]);
-	return ret;
+	return bukkits[r];
 }
 
 void modlist(vector<Mod>* mods, const char* bukkitcode) {

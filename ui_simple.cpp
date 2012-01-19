@@ -69,7 +69,7 @@ int confirm(struct BukkitInfo* binfo, vector<Mod>& mods) {
 	char yn;
 	
 	status(" ");
-	printf("About to download Bukkit %s, and add the following mods in this order:\n", binfo->code);
+	printf("About to download Bukkit %s, and add the following mods in this order:\n", binfo->version);
 	for (unsigned int i = 0; i < mods.size(); i++) {
 		printf("%d: %s\n", i+1, mods[i].name);
 	}

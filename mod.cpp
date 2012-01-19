@@ -1,12 +1,6 @@
 #include "icecream.h"
 using namespace YAML;
 
-void operator>>(const Node& lhs, char*& rhs) {
-	string value;
-	lhs >> value;
-	rhs = strdup(value.c_str());
-}
-
 Mod::Mod(const YAML::Node& globnode, const YAML::Node& modnode) {
 	const Node* key;
 	char* value;

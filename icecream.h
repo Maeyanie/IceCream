@@ -12,27 +12,27 @@ using namespace std;
 
 #ifdef __WIN32__
 #define BUKKITURL { \
-	"http://d186ocprvpb7jc.cloudfront.net/client/bukkitlist.txt", \
-	"http://icecreambukkit.s3.amazonaws.com/client/bukkitlist.txt" \
-	"http://icecream.maeyanie.com/client/bukkitlist.txt", \
+	"http://d186ocprvpb7jc.cloudfront.net/client/bukkitlist.yml", \
+	"http://icecreambukkit.s3.amazonaws.com/client/bukkitlist.yml", \
+	"http://icecream.maeyanie.com/client/bukkitlist.yml", \
 	}
 #define BUKKITURLS 3
 #define METAURL { \
 	"http://d186ocprvpb7jc.cloudfront.net/client/metalist", \
-	"http://icecreambukkit.s3.amazonaws.com/client/metalist" \
+	"http://icecreambukkit.s3.amazonaws.com/client/metalist", \
 	"http://icecream.maeyanie.com/client/metalist", \
 	}
 #define METAURLS 3
 #else
 #define BUKKITURL { \
-	"https://d186ocprvpb7jc.cloudfront.net/client/bukkitlist.txt", \
-	"https://icecreambukkit.s3.amazonaws.com/client/bukkitlist.txt" \
-	"http://icecream.maeyanie.com/client/bukkitlist.txt", \
+	"https://d186ocprvpb7jc.cloudfront.net/client/bukkitlist.yml", \
+	"https://icecreambukkit.s3.amazonaws.com/client/bukkitlist.yml", \
+	"http://icecream.maeyanie.com/client/bukkitlist.yml", \
 	}
 #define BUKKITURLS 3
 #define METAURL { \
 	"https://d186ocprvpb7jc.cloudfront.net/client/metalist", \
-	"https://icecreambukkit.s3.amazonaws.com/client/metalist" \
+	"https://icecreambukkit.s3.amazonaws.com/client/metalist", \
 	"http://icecream.maeyanie.com/client/metalist", \
 	}
 #define METAURLS 3
@@ -41,10 +41,29 @@ using namespace std;
 
 #include "mod.h"
 
-struct BukkitInfo {
-	char* url;
-	char* code;
-	char* option;
+class BukkitInfo {
+public:
+	char* version;
+	char* name;
+	vector<char*> url;
+	
+	BukkitInfo() { version = name = NULL; }
+	BukkitInfo(const BukkitInfo& rhs) {
+		version = strdup(rhs.version);
+		name = strdup(rhs.name);
+		vecdup(url, rhs.url);
+	}
+	~BukkitInfo() {
+		if (version) free(version);
+		if (name) free(name);
+		vecfree(url);
+	}
+	
+	BukkitInfo& operator=(const BukkitInfo& rhs) {
+		version = strdup(rhs.version);
+		name = strdup(rhs.name);
+		vecdup(url, rhs.url);
+	}
 };
 
 extern struct Settings {
@@ -54,7 +73,7 @@ extern struct Settings {
 
 
 
-struct BukkitInfo* bukkitversion();
+struct BukkitInfo bukkitversion();
 void modlist(vector<Mod>* mods, const char* bukkitcode);
 void processdeps(vector<Mod>* mods, list<Mod>* modlist, const Mod& mod);
 void buildjar(const struct BukkitInfo*, vector<Mod>&);
