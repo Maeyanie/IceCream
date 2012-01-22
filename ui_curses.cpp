@@ -17,6 +17,7 @@ void uiinit() {
 
 	wmain = newwin(LINES-1, COLS, 0, 0);
 	pmain = new_panel(wmain);
+	scrollok(wmain, TRUE);
 	
 	update_panels();
 	doupdate();
@@ -107,17 +108,17 @@ static void showinfo(WINDOW* info, const Mod& mod) {
 	text = strdup(mod.desc);
 	word = strtok(text, " ");
 	while (word) {
-		if (w + strlen(word) + 1 >= getmaxx(info)) {
+		if (w + (int)strlen(word) + 1 >= (int)getmaxx(info) - (int)getbegx(info)) {
 			waddch(info, '\n');
-			if (r == LINES-1) break;
-			wmove(info, r++, 0);
+			if (r++ == LINES-2) break;
+			wmove(info, r, 0);
 			waddstr(info, word);
 			w = strlen(word);
 		} else {
-			waddch(info, ' ');
 			waddstr(info, word);
 			w += strlen(word) + 1;
 		}
+		waddch(info, ' ');
 		word = strtok(NULL, " ");
 	}
 	free(text);
