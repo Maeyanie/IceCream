@@ -59,10 +59,11 @@ public:
 		vecfree(url);
 	}
 	
-	BukkitInfo& operator=(const BukkitInfo& rhs) {
+	const BukkitInfo& operator=(const BukkitInfo& rhs) {
 		version = strdup(rhs.version);
 		name = strdup(rhs.name);
 		vecdup(url, rhs.url);
+		return rhs;
 	}
 };
 
@@ -81,9 +82,10 @@ public:
 		vecfree(url);
 	}
 	
-	ModList& operator=(const ModList& rhs) {
+	const ModList& operator=(const ModList& rhs) {
 		name = strdup(rhs.name);
 		vecdup(url, rhs.url);
+		return rhs;
 	}
 };
 
