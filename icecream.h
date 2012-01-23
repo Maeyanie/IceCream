@@ -10,20 +10,6 @@
 #include <list>
 using namespace std;
 
-#ifdef __WIN32__
-#define BUKKITURL { \
-	"http://d186ocprvpb7jc.cloudfront.net/client/bukkitlist.yml", \
-	"http://icecreambukkit.s3.amazonaws.com/client/bukkitlist.yml", \
-	"http://icecream.maeyanie.com/client/bukkitlist.yml", \
-	}
-#define BUKKITURLS 3
-#define METAURL { \
-	"http://d186ocprvpb7jc.cloudfront.net/client/metalist", \
-	"http://icecreambukkit.s3.amazonaws.com/client/metalist", \
-	"http://icecream.maeyanie.com/client/metalist", \
-	}
-#define METAURLS 3
-#else
 #define BUKKITURL { \
 	"https://d186ocprvpb7jc.cloudfront.net/client/bukkitlist.yml", \
 	"https://icecreambukkit.s3.amazonaws.com/client/bukkitlist.yml", \
@@ -36,7 +22,6 @@ using namespace std;
 	"http://icecream.maeyanie.com/client/metalist", \
 	}
 #define METAURLS 3
-#endif
 #define BUKKITJAR "craftbukkit.jar"
 
 #include "mod.h"
