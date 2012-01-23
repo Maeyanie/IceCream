@@ -65,6 +65,10 @@ void realdie(const char* file, int line, const char* fmt, ...) {
 	vfprintf(stderr, fmt, vl);
 	fflush(stderr);
 	va_end(vl);
+
+	#ifdef __WIN32__
+	system("pause");
+	#endif
 	exit(1);
 }
 
