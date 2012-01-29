@@ -129,13 +129,15 @@ int showmenu(const char* title, vector<char*>& options) {
 	int ch;
 	int line = 0;
 	int offset = 0;
+	int typed = 0;
 	WINDOW* menu = newwin(LINES-1, COLS, 0, 0);
 	PANEL* pmenu = new_panel(menu);
 	status(" ");
 	
-	wprintw(menu, title);
-	
 	do {
+		werase(menu);
+		wprintw(menu, title);
+
 		int start = offset;
 		int end = offset + (LINES-4);
 		if (end > (int)options.size()) end = options.size();
@@ -155,28 +157,41 @@ int showmenu(const char* title, vector<char*>& options) {
 				offset--;
 				if (offset < 0) offset = 0;
 			}
+			if (typed) status(" ");
+			typed = 0;
 			break;
 		case KEY_DOWN:
 			line++;
 			if (line >= end) line = end-1;
-			if (line+start+4 >= LINES) offset++;
+			if (line-start+5 >= LINES) {
+				offset++;
+			}
+			if (typed) status(" ");
+			typed = 0;
 			break;
 		case KEY_PPAGE:
 			line -= LINES-4;
 			if (line < 0) line = 0;
-			while (line-1 <= start && offset > 0) offset--;
+			offset = line-1;
+			if (offset < 0) offset = 0;
 			break;
 		case KEY_NPAGE:
 			line += LINES-4;
-			if (line >= end) line = end-1;
-			while (line+start+4 >= LINES) offset++;
+			if (line >= (int)options.size())
+				line = options.size()-1;
+			offset = line-LINES+6;
+			if (offset < 0) offset = 0;
 			break;
 		case KEY_HOME:
 			line = 0;
+			offset = 0;
 			break;
 		case KEY_END:
-			line = end-1;
+			line = options.size()-1;
+			offset = line-LINES+6;
+			if (offset < 0) offset = 0;
 			break;
+		case '0':
 		case '1':
 		case '2':
 		case '3':
@@ -186,7 +201,11 @@ int showmenu(const char* title, vector<char*>& options) {
 		case '7':
 		case '8':
 		case '9':
-			line = ch - '1';
+			typed *= 10;
+			typed += ch - '0';
+			line = typed-1;
+			if (line >= options.size()) line = options.size()-1;
+			status("%d", typed);
 			break;
 		}
 	} while (ch != '\n');
@@ -208,9 +227,10 @@ int showmenu(list<Mod>& options) {
 	PANEL* pinfo = new_panel(info);
 	status(" ");
 	
-	wprintw(menu, "Select Mods");
-	
 	do {
+		werase(menu);
+		wprintw(menu, "Select Mods");
+
 		int start = offset;
 		int end = offset + (LINES-4);
 		if (end > (int)options.size()) end = options.size();
@@ -218,13 +238,12 @@ int showmenu(list<Mod>& options) {
 		list<Mod>::iterator i = options.begin();
 		int x = 0;
 		while (x < start) x++, i++;
-		if (x == 0) {
+		if (x++ == 0) {
 			mvwprintw(menu, 3, 0, "Done\n");
 			if (line == 0) mvwchgat(menu, 3, 0, -1, A_REVERSE, 0, NULL);
-			x++;
 		}
 		while (x <= end && i != options.end()) {
-			mvwprintw(menu, x-start+3, 0, "%d: %s\n", x, (*i).name);
+			mvwprintw(menu, x-start+3, 0, "%d: %s\n", x, i->name);
 			if (x == line) {
 				mvwchgat(menu, x-start+3, 0, -1, A_REVERSE, 0, NULL);
 				showinfo(info, *i);
@@ -250,25 +269,33 @@ int showmenu(list<Mod>& options) {
 		case KEY_DOWN:
 			line++;
 			if (line >= end) line = end-1;
-			if (line+start+4 >= LINES) offset++;
+			if (line-start+5 >= LINES) {
+				offset++;
+			}
 			if (typed) status(" ");
 			typed = 0;
 			break;
 		case KEY_PPAGE:
 			line -= LINES-4;
 			if (line < 0) line = 0;
-			while (line-1 <= start && offset > 0) offset--;
+			offset = line-1;
+			if (offset < 0) offset = 0;
 			break;
 		case KEY_NPAGE:
 			line += LINES-4;
-			if (line >= end) line = end-1;
-			while (line+start+4 >= LINES) offset++;
+			if (line > (int)options.size())
+				line = options.size();
+			offset = line-LINES+6;
+			if (offset < 0) offset = 0;
 			break;
 		case KEY_HOME:
 			line = 0;
+			offset = 0;
 			break;
 		case KEY_END:
-			line = end-1;
+			line = options.size();
+			offset = line-LINES+6;
+			if (offset < 0) offset = 0;
 			break;
 		case '0':
 		case '1':
@@ -283,6 +310,7 @@ int showmenu(list<Mod>& options) {
 			typed *= 10;
 			typed += ch - '0';
 			line = typed;
+			if (line > options.size()) line = options.size();
 			status("%d", typed);
 			break;
 		}

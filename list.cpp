@@ -135,9 +135,13 @@ void modlist(vector<Mod>* mods, const char* bukkitcode) {
 	int m;
 	while ((m = showmenu(modlist)) >= 0) {
 		list<Mod>::iterator i = modlist.begin();
-		for (int j = 0; j < m; j++) i++;
+		for (int j = 0; j < m; j++) {
+			i++;
+		}
 		Mod mod = *i;
 		modlist.remove(mod);
+		
+		log("Adding mod: %s\n", mod.name);
 		
 		processdeps(mods, &modlist, mod);
 		
