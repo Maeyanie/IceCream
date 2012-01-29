@@ -111,9 +111,17 @@ void modlist(vector<Mod>* mods, const char* bukkitcode) {
 		Node doc;
 		try {
 			while (parser.GetNextDocument(doc)) {
-				const Node& modnode = doc["mods"];
-				for (unsigned int j = 0; j < modnode.size(); j++) {
-					modlist.push_back(Mod(doc, modnode[j]));
+				if (doc.FindValue("mods")) {
+					const Node& modnode = doc["mods"];
+					for (unsigned int j = 0; j < modnode.size(); j++) {
+						modlist.push_back(Mod(doc, modnode[j]));
+					}
+				}
+				if (doc.FindValue(bukkitcode)) {
+					const Node& modnode = doc[bukkitcode];
+					for (unsigned int j = 0; j < modnode.size(); j++) {
+						modlist.push_back(Mod(doc, modnode[j]));
+					}
 				}
 			}
 		} catch (ParserException e) {
