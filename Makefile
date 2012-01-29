@@ -1,4 +1,7 @@
-OBJS=icecream.o jar.o list.o mod.o web.o
+OBJS:=icecream.o jar.o list.o mod.o web.o
+VERSION:=$(shell ./version.sh)
+
+CXXFLAGS+=-DVERSION=\"$(VERSION)\"
 
 all: icecream icecream-curses
 

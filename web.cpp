@@ -3,6 +3,10 @@
 #include <errno.h>
 #include <curl/curl.h>
 
+#ifndef VERSION
+#define VERSION "unknown"
+#endif
+
 struct FetchInfo {
 	char** string;
 	int length;
@@ -36,7 +40,7 @@ int progresscb(void* clientp, double dltotal, double dlnow, double ultotal, doub
 static void curlsetup() {
 	curl = curl_easy_init();
 	if (!curl) die("cURL init failed.");
-	curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/0.6dev (http://icecream.maeyanie.com)");
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, "IceCream/"VERSION" (http://icecream.maeyanie.com)");
 	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, &progresscb);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 	if (settings.verbose) curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
