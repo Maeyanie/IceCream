@@ -12,7 +12,7 @@ icecream: $(OBJS) ui_simple.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(OBJS) ui_simple.o -lcurl -lyaml-cpp -lzip -lz
 
 icecream-curses: $(OBJS) ui_curses.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(OBJS) ui_curses.o -lcurl -lyaml-cpp -lzip -lz -lpdcurses
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(OBJS) ui_curses.o -lcurl -lyaml-cpp -lzip -lz -lpanel -lncurses
 
 clean:
 	rm -f $(OBJS) ui_simple.o ui_curses.o
