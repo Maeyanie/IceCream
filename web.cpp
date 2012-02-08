@@ -44,7 +44,7 @@ static void curlsetup() {
 	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, &progresscb);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 	if (settings.verbose) curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-	#ifdef __WIN32__
+	#if defined(__WIN32__) || defined(__CYGWIN__)
 	curl_easy_setopt(curl, CURLOPT_CAINFO, "ca-bundle.crt");
 	#endif
 }

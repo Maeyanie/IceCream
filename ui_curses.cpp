@@ -63,18 +63,18 @@ void pbstart() {
 void pbupdate(double done) {
 	int r, c;
 	char fmt[16];
-	char bar[COLS-2];
+	char bar[COLS-3];
 
 	getyx(wmain, r, c);
 
-	done *= (COLS-3);
-	if (done > COLS-3) done = COLS-3; // Shouldn't be possible, but...
+	done *= (COLS-4);
+	if (done > COLS-4) done = COLS-4; // Shouldn't be possible, but...
 	
 	int i;
 	for (i = 0; i < done; i++) bar[i] = '=';
 	bar[i] = 0;
 	
-	sprintf(fmt, "[%%-%ds]", COLS-3);
+	sprintf(fmt, "[%%-%ds]", COLS-4);
 	mvwprintw(wmain, r, 0, fmt, bar);
 	
 	update_panels();
@@ -221,9 +221,9 @@ int showmenu(list<Mod>& options) {
 	int line = 0;
 	int offset = 0;
 	int typed = 0;
-	WINDOW* menu = newwin(LINES-1, COLS/2, 0, 0);
+	WINDOW* menu = newwin(LINES-1, (COLS-1)/2, 0, 0);
 	PANEL* pmenu = new_panel(menu);
-	WINDOW* info = newwin(LINES-1, COLS+1/2, 0, COLS/2);
+	WINDOW* info = newwin(LINES-1, COLS/2, 0, COLS/2);
 	PANEL* pinfo = new_panel(info);
 	status(" ");
 	
