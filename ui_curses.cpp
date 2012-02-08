@@ -225,7 +225,7 @@ int showmenu(const char* title, vector<char*>& options) {
 			typed *= 10;
 			typed += ch - '0';
 			line = typed-1;
-			if (line >= options.size()) line = options.size()-1;
+			if (line >= (int)options.size()) line = options.size()-1;
 			status("%d", typed);
 			break;
 		}
@@ -331,7 +331,7 @@ int showmenu(list<Mod>& options) {
 			typed *= 10;
 			typed += ch - '0';
 			line = typed;
-			if (line > options.size()) line = options.size();
+			if (line > (int)options.size()) line = options.size();
 			status("%d", typed);
 			break;
 		}
