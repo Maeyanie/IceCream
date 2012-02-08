@@ -33,7 +33,7 @@ size_t fetchurlfile(char *ptr, size_t size, size_t nmemb, void *userdata) {
 }
 
 int progresscb(void* clientp, double dltotal, double dlnow, double ultotal, double ulnow) {
-	pbupdate(dlnow / dltotal);
+	pbupdate(dlnow, dltotal);
 	return 0;
 }
 
@@ -93,7 +93,7 @@ int fetchurl(const char* url, const char* file) {
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
 
 	curl_easy_setopt(curl, CURLOPT_URL, url);
-	pbstart();
+	pbstart(file, url);
 	rc = curl_easy_perform(curl);
 	pbdone();
 	if (rc) {

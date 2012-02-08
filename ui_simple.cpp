@@ -21,12 +21,15 @@ void log(const char* fmt, ...) {
 	va_end(vl);
 }
 
-void pbstart() {}
+void pbstart(const char* filename, const char* url) {
+	printf("Downloading: %s\n", filename);
+	printf("From: %s\n", url);
+}
 
-void pbupdate(double done) {
+void pbupdate(double dlnow, double dltotal) {
 	char bar[51];
 
-	done *= 50.0;
+	double done = (dlnow/dltotal)*50.0;
 	if (done > 50.0) done = 50.0; // Shouldn't be possible, but...
 	
 	int i;

@@ -1,6 +1,7 @@
 #include "icecream.h"
 #include <curses.h>
 #include <panel.h>
+#include <time.h>
 
 static WINDOW* wmain;
 static PANEL* pmain;
@@ -56,33 +57,53 @@ void log(const char* fmt, ...) {
 	va_end(vl);
 }
 
-void pbstart() {
-	wprintw(wmain, "\n");
+static struct {
+	WINDOW* progwin;
+	PANEL* pprogwin;
+	const char* filename;
+	const char* url;
+	time_t tstart;
+} progressinfo;
+
+void pbstart(const char* filename, const char* url) {
+	progressinfo.progwin = newwin(8, 52, (LINES-8)/2, (COLS-52)/2);
+	progressinfo.pprogwin = new_panel(progressinfo.progwin);
+	progressinfo.filename = filename;
+	progressinfo.url = url;
+	progressinfo.tstart = time(NULL);
 }
 
-void pbupdate(double done) {
-	int r, c;
-	char fmt[16];
-	char bar[COLS-3];
+void pbupdate(double dlnow, double dltotal) {
+	char bar[51];
 
-	getyx(wmain, r, c);
-
-	done *= (COLS-4);
-	if (done > COLS-4) done = COLS-4; // Shouldn't be possible, but...
+	int bars = (int)((dlnow/dltotal)*50.0);
+	if (bars > 50) bars = 50; // Shouldn't be possible, but...
 	
 	int i;
-	for (i = 0; i < done; i++) bar[i] = '=';
+	for (i = 0; i < bars; i++) bar[i] = '=';
 	bar[i] = 0;
 	
-	sprintf(fmt, "[%%-%ds]", COLS-4);
-	mvwprintw(wmain, r, 0, fmt, bar);
+	time_t tnow = time(NULL);
+	double speed = dlnow / (double)(tnow - progressinfo.tstart);
+	
+	werase(progressinfo.progwin);
+	mvwprintw(progressinfo.progwin, 1, 1, "Downloading: %s\n", progressinfo.filename);
+	mvwprintw(progressinfo.progwin, 2, 1, "From: %s\n", progressinfo.url);
+	
+	mvwprintw(progressinfo.progwin, 4, 1, "Speed: %.2lf kB/s\n", speed/1024.0);
+	mvwprintw(progressinfo.progwin, 5, 1, "Progress: %d/%d kB (%.2lf%%)\n",
+		(int)dlnow/1024, (int)dltotal/1024, (dlnow/dltotal)*100.0);
+	mvwprintw(progressinfo.progwin, 6, 1, "%-50s", bar);
+	box(progressinfo.progwin, 0, 0);
 	
 	update_panels();
 	doupdate();
 }
 
 void pbdone() {
-	wprintw(wmain, "\n");
+	del_panel(progressinfo.pprogwin);
+	delwin(progressinfo.progwin);
+	refresh();
 }
 
 static void showinfo(WINDOW* info, const Mod& mod) {
@@ -108,7 +129,7 @@ static void showinfo(WINDOW* info, const Mod& mod) {
 	text = strdup(mod.desc);
 	word = strtok(text, " ");
 	while (word) {
-		if (w + (int)strlen(word) + 1 >= (int)getmaxx(info) - (int)getbegx(info)) {
+		if (w + (int)strlen(word) + 1 >= COLS/2) {
 			waddch(info, '\n');
 			if (r++ == LINES-2) break;
 			wmove(info, r, 0);
@@ -223,7 +244,7 @@ int showmenu(list<Mod>& options) {
 	int typed = 0;
 	WINDOW* menu = newwin(LINES-1, (COLS-1)/2, 0, 0);
 	PANEL* pmenu = new_panel(menu);
-	WINDOW* info = newwin(LINES-1, COLS/2, 0, COLS/2);
+	WINDOW* info = newwin(LINES-1, COLS/2, 0, (COLS-1)/2);
 	PANEL* pinfo = new_panel(info);
 	status(" ");
 	
