@@ -125,7 +125,7 @@ void modlist(vector<Mod>* mods, const char* bukkitcode) {
 				}
 			}
 		} catch (ParserException e) {
-			die("%s\n", e.what());
+			log("Error parsing modlist %s: %s\n", lists[i].name, e.what());
 		}
 	}
 	
